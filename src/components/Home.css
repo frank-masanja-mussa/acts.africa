@@ -1,0 +1,424 @@
+.home-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-top: 0;
+  transition: transform 0.25s ease;
+  will-change: transform;
+}
+
+.background-music {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: calc(85vh + 64px);
+  min-height: 580px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 96px; /* offset fixed navbar */
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.content-overlay {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 48px 20px 24px;
+  margin-bottom: 160px;
+}
+
+.bg-fade {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0%,
+    rgba(8,10,14,0.35) 35%,
+    rgba(10,12,16,0.6) 60%,
+    rgba(14,16,20,1) 100%
+  );
+}
+
+.section-fade {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: linear-gradient(
+    to bottom,
+    rgba(14,16,20,1) 0%,
+    rgba(15,23,42,0.85) 45%,
+    rgba(12,18,36,0.95) 75%,
+    rgba(11,16,32,1) 100%
+  );
+}
+
+.analytics-section {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  background: linear-gradient(180deg, #0e1014 0%, #0f172a 100%);
+  padding: 28px 16px 56px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Mission & Steps */
+.mission-section {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  background: linear-gradient(180deg, #0f172a 0%, #0b1020 100%);
+  padding: 40px 16px 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.mission-container {
+  width: 100%;
+  max-width: 900px;
+}
+
+.mission-text {
+  color: #e5e7eb;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mission-heading {
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.steps {
+  position: relative;
+  padding: 20px 0 120px;
+}
+
+.step-card {
+  position: relative;
+  z-index: 3;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  border-radius: 18px;
+  padding: 22px 22px 28px;
+  margin-bottom: 300px; /* real spacing between cards */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.step-card + .step-card { margin-top: 0; }
+
+.step-card.left { margin-right: 60px; }
+.step-card.right { margin-left: 60px; }
+
+.step-card .step-badge {
+  display: inline-block;
+  background: rgba(125, 211, 252, 0.2);
+  color: #7dd3fc;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  margin-bottom: 14px;
+}
+
+.step-title {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.step-body {
+  color: #cbd5e1;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin-top: 6px;
+}
+
+.step-card.second {
+  background: rgba(255,255,255,0.06);
+}
+
+.step-connector {
+  position: relative; /* in-flow so spacing relates to cards */
+  display: block;
+  width: 100%;
+  height: 200px;
+  pointer-events: none;
+  z-index: 2;
+}
+.step-connector path {
+  fill: none;
+  stroke: rgba(125, 211, 252, 0.55);
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* no absolute offsets needed when connectors are in-flow */
+
+/* Anchor dots to visually join lines to cards */
+.step-card.left::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: rgba(125, 211, 252, 0.95);
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.8);
+}
+
+.step-card.right::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: rgba(125, 211, 252, 0.95);
+  box-shadow: 0 0 10px rgba(125, 211, 252, 0.8);
+}
+
+@media (max-width: 768px) {
+  .step-card.left, .step-card.right { margin: 0; }
+  .step-card + .step-card { margin-top: 60px; }
+  .step-connector { display: none; }
+}
+
+.analytics-container {
+  margin-top: 24px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.insights-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.kpi {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.kpi-label { color: #cbd5e1; font-size: 0.78rem; margin-bottom: 4px; }
+.kpi-value { color: #ffffff; font-weight: 800; font-size: 1.1rem; }
+.kpi-value .accent { color: #7dd3fc; }
+
+.analytics-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+  height: 360px;
+}
+
+.analytics-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+  color: #ffffff;
+  text-align: left;
+}
+
+.analytics-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+/* Live ticker */
+.live-row {
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+.live-ticker {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 10px 0;
+  color: #e5e7eb;
+  animation: tickerScroll 30s linear infinite;
+}
+.live-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #22c55e;
+  margin: 0 10px;
+  box-shadow: 0 0 8px rgba(34,197,94,0.9);
+}
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.35);
+  text-align: left;
+}
+
+.stat-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+  margin-bottom: 8px;
+}
+
+.stat-values {
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+}
+
+.stat-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.stat-number.accent {
+  color: #7dd3fc;
+}
+
+.stat-caption {
+  display: block;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+.stat-year {
+  margin-left: 6px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.main-text {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: -0.02em;
+}
+
+.main-text .line { display: block; }
+.main-text .highlight { color: #7dd3fc; }
+
+.watch-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  color: white;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.watch-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.watch-button:active {
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .main-text {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero { padding-top: 108px; }
+  
+  .watch-button {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+  .insights-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .main-text {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .hero { padding-top: 116px; }
+  
+  .watch-button {
+    padding: 10px 25px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Subtle depth effect when mobile menu is open */
+body.menu-open .home-container {
+  transform: scale(0.985);
+}
