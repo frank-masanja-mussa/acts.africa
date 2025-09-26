@@ -12,6 +12,7 @@ const PageLayout = ({ title, children, action }) => {
         muted 
         loop 
         playsInline
+        aria-label="Background video showing ACTS Africa mission"
       >
         <source src="/daven_video_1a8e6e15-3_092525_.mp4" type="video/mp4" />
         Your browser does not support the video tag.

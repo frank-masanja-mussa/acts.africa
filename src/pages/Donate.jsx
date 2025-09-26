@@ -27,7 +27,7 @@ const Donate = () => {
 
   return (
     <PageLayout title="Donate for the Cause">
-      <audio ref={audioRef} loop preload="auto" className="background-music">
+      <audio ref={audioRef} loop preload="auto" className="background-music" aria-label="Background music" controls={false}>
         <source src="/joel_sunny_codex.mp3" type="audio/mpeg" />
       </audio>
       <div className="page-card">
@@ -36,7 +36,7 @@ const Donate = () => {
         </p>
       </div>
       <div className="page-actions">
-        <button className="page-button">Donate Now</button>
+        <button className="page-button" aria-label="Donate to support ACTS Africa mission">Donate Now</button>
       </div>
     </PageLayout>
   )

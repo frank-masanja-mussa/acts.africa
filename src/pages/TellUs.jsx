@@ -10,7 +10,7 @@ const TellUs = () => {
         </p>
       </div>
       <div className="page-actions">
-        <button className="page-button">Send</button>
+        <button className="page-button" aria-label="Send your message to ACTS Africa">Send</button>
       </div>
     </PageLayout>
   )

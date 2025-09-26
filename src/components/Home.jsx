@@ -62,7 +62,7 @@ const Home = () => {
         const endX = (bIsRight ? bRect.left : bRect.right) - svgRect.left
         const endY = bRect.top + bRect.height / 2 - svgRect.top
         // Adjust SVG height to comfortably include vertical delta
-        const requiredH = Math.max(160, Math.abs(endY - startY) + 120)
+        const requiredH = Math.max(120, Math.abs(endY - startY) + 80)
         svg.style.height = `${requiredH}px`
         const adjSvgRect = svg.getBoundingClientRect()
         const sy = startY + (svgRect.top - adjSvgRect.top)
@@ -93,6 +93,7 @@ const Home = () => {
         muted 
         loop 
         playsInline
+        aria-label="Background video showing ACTS Africa mission"
       >
         <source src="/daven_video_1a8e6e15-3_092525_.mp4" type="video/mp4" />
         Your browser does not support the video tag.
@@ -104,7 +105,7 @@ const Home = () => {
             <span className="line">what about the uninformed</span>
             <span className="line highlight">2.5B?</span>
           </h1>
-          <button className="watch-button" onClick={handleWatchClick}>
+          <button className="watch-button" onClick={handleWatchClick} aria-label="Watch our mission video">
             Watch
           </button>
         </div>
@@ -116,6 +117,8 @@ const Home = () => {
         loop
         preload="auto"
         className="background-music"
+        aria-label="Background music"
+        controls={false}
       >
         <source src="/summertime_sadness_violin.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
@@ -132,58 +135,58 @@ const Home = () => {
       <div className="section-fade" />
 
       {/* Mission statement */}
-      <section className="mission-section">
+      <section className="mission-section" aria-labelledby="mission-heading">
         <div className="mission-container">
           <p className="mission-text">
-            We are making sure the 2.5B working class people of 2030 through 2050 are informed about AI so we save them from unemployment and poverty due to missinformation.
+            We are making sure the 2.5B working class people of 2030 through 2050 are informed about AI so we save them from unemployment and poverty due to misinformation.
           </p>
-          <h2 className="mission-heading">How we do it?</h2>
+          <h2 id="mission-heading" className="mission-heading">How we do it?</h2>
 
-          <div className="steps">
-            <div className="step-card left" ref={el => stepRefs.current[0] = el}>
-              <div className="step-badge">Step 1</div>
+          <div className="steps" role="list" aria-label="Steps to achieve our mission">
+            <div className="step-card left" ref={el => stepRefs.current[0] = el} role="listitem">
+              <div className="step-badge" aria-label="Step 1">Step 1</div>
               <h3 className="step-title">Start in Katavi, Tanzania</h3>
               <p className="step-body">Educate 42 secondary schools — nearly 10,000 students and teachers — with AI literacy and hands‑on workshops. Collect outcomes and refine the model.</p>
             </div>
 
-            <svg className="step-connector conn-1" ref={el => connRefs.current[0] = el} viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="step-connector conn-1" ref={el => connRefs.current[0] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
               <path d={paths[0]} />
             </svg>
 
-            <div className="step-card right" ref={el => stepRefs.current[1] = el}>
-              <div className="step-badge">Step 2</div>
+            <div className="step-card right" ref={el => stepRefs.current[1] = el} role="listitem">
+              <div className="step-badge" aria-label="Step 2">Step 2</div>
               <h3 className="step-title">Scale across Tanzania</h3>
               <p className="step-body">Open a Tanzania chapter; bring AI clubs, teacher training, and community showcases to regions nationwide guided by Katavi results.</p>
             </div>
 
-            <svg className="step-connector conn-2" ref={el => connRefs.current[1] = el} viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="step-connector conn-2" ref={el => connRefs.current[1] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
               <path d={paths[1]} />
             </svg>
 
-            <div className="step-card left" ref={el => stepRefs.current[2] = el}>
-              <div className="step-badge">Step 3</div>
+            <div className="step-card left" ref={el => stepRefs.current[2] = el} role="listitem">
+              <div className="step-badge" aria-label="Step 3">Step 3</div>
               <h3 className="step-title">Data‑driven curriculum & partners</h3>
               <p className="step-body">Use outcomes data to iterate a localized AI literacy curriculum. Partner with ministries, telcos, and universities to expand reach and credibility.</p>
             </div>
 
-            <svg className="step-connector conn-3" ref={el => connRefs.current[2] = el} viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="step-connector conn-3" ref={el => connRefs.current[2] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
               <path d={paths[2]} />
             </svg>
 
-            <div className="step-card right" ref={el => stepRefs.current[3] = el}>
-              <div className="step-badge">Step 4</div>
+            <div className="step-card right" ref={el => stepRefs.current[3] = el} role="listitem">
+              <div className="step-badge" aria-label="Step 4">Step 4</div>
               <h3 className="step-title">Pan‑African chapters</h3>
               <p className="step-body">Launch chapters across Sub‑Saharan Africa. Train local leaders, seed AI clubs, and deploy scalable content platforms with offline support.</p>
             </div>
 
-            <svg className="step-connector conn-4" ref={el => connRefs.current[3] = el} viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+            <svg className="step-connector conn-4" ref={el => connRefs.current[3] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
               <path d={paths[3]} />
             </svg>
 
-            <div className="step-card left" ref={el => stepRefs.current[4] = el}>
-              <div className="step-badge">Step 5</div>
+            <div className="step-card left" ref={el => stepRefs.current[4] = el} role="listitem">
+              <div className="step-badge" aria-label="Step 5">Step 5</div>
               <h3 className="step-title">Workforce readiness at scale</h3>
-              <p className="step-body">Connect youth to AI‑augmented livelihoods via projects, apprenticeships, and micro‑credentials. Inform policy so Africa powers the world’s workforce by 2050.</p>
+              <p className="step-body">Connect youth to AI‑augmented livelihoods via projects, apprenticeships, and micro‑credentials. Inform policy so Africa powers the world's workforce by 2050.</p>
             </div>
           </div>
       </div>

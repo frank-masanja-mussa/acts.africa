@@ -26,7 +26,7 @@ const StartChapter = () => {
 
   return (
     <PageLayout title="Start a Local Chapter">
-      <audio ref={audioRef} loop preload="auto" className="background-music">
+      <audio ref={audioRef} loop preload="auto" className="background-music" aria-label="Background music" controls={false}>
         <source src="/joel_sunny_codex.mp3" type="audio/mpeg" />
       </audio>
       <div className="page-card">
@@ -35,7 +35,7 @@ const StartChapter = () => {
         </p>
       </div>
       <div className="page-actions">
-        <button className="page-button">Start a Chapter</button>
+        <button className="page-button" aria-label="Start a new ACTS Africa chapter in your area">Start a Chapter</button>
       </div>
     </PageLayout>
   )

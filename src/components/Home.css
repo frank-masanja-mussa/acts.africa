@@ -133,7 +133,7 @@
   border: none;
   border-radius: 18px;
   padding: 22px 22px 28px;
-  margin-bottom: 300px; /* real spacing between cards */
+  margin-bottom: 80px; /* Reduced spacing between cards */
   box-shadow: 0 15px 35px rgba(0,0,0,0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -169,15 +169,12 @@
   margin-top: 6px;
 }
 
-.step-card.second {
-  background: rgba(255,255,255,0.06);
-}
 
 .step-connector {
   position: relative; /* in-flow so spacing relates to cards */
   display: block;
   width: 100%;
-  height: 200px;
+  height: 120px; /* Reduced height to match card spacing */
   pointer-events: none;
   z-index: 2;
 }
@@ -220,7 +217,8 @@
 
 @media (max-width: 768px) {
   .step-card.left, .step-card.right { margin: 0; }
-  .step-card + .step-card { margin-top: 60px; }
+  .step-card { margin-bottom: 40px; } /* Reduced mobile spacing */
+  .step-card + .step-card { margin-top: 0; }
   .step-connector { display: none; }
 }
 
@@ -388,6 +386,11 @@
 
 .watch-button:active {
   transform: translateY(0);
+}
+
+.watch-button:focus {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
 }
 
 /* Responsive design */

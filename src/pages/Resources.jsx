@@ -10,7 +10,7 @@ const Resources = () => {
         </p>
       </div>
       <div className="page-actions">
-        <button className="page-button">Contribute</button>
+        <button className="page-button" aria-label="Contribute resources to ACTS Africa">Contribute</button>
       </div>
     </PageLayout>
   )

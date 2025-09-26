@@ -56,6 +56,11 @@
   transform: translateY(-1px);
 }
 
+.nav-link:focus {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
+}
+
 /* Toggle (hamburger) */
 .nav-toggle {
   display: none;
@@ -123,6 +128,11 @@
 .mobile-link:hover {
   background: rgba(255, 255, 255, 0.18);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-link:focus {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
 }
 
 @keyframes menuSlide {
