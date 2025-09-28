@@ -4,9 +4,12 @@ import './Navbar.css'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isChaptersOpen, setIsChaptersOpen] = useState(false)
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
+  const toggleChapters = () => setIsChaptersOpen(!isChaptersOpen)
+  const closeChapters = () => setIsChaptersOpen(false)
 
   // Prevent background scroll when menu is open
   useEffect(() => {
@@ -41,7 +44,35 @@ const Navbar = () => {
 
         <nav className="nav-links">
           <Link to="/donate" className="nav-link">Donate</Link>
-          <Link to="/start-chapter" className="nav-link">Start a Chapter</Link>
+          
+          {/* Chapters Dropdown */}
+          <div className="dropdown-container">
+            <button 
+              className="nav-link dropdown-trigger"
+              onClick={toggleChapters}
+              onMouseEnter={() => setIsChaptersOpen(true)}
+              onMouseLeave={() => setIsChaptersOpen(false)}
+            >
+              Chapters
+              <span className="dropdown-arrow">▼</span>
+            </button>
+            
+            {isChaptersOpen && (
+              <div 
+                className="dropdown-menu"
+                onMouseEnter={() => setIsChaptersOpen(true)}
+                onMouseLeave={() => setIsChaptersOpen(false)}
+              >
+                <Link to="/tanzania-chapter" className="dropdown-item" onClick={closeChapters}>
+                  Our Chapters
+                </Link>
+                <Link to="/start-chapter" className="dropdown-item" onClick={closeChapters}>
+                  Start a Chapter
+                </Link>
+              </div>
+            )}
+          </div>
+          
           <Link to="/resources" className="nav-link">Resources</Link>
           <Link to="/tell-us" className="nav-link">Tell Us</Link>
         </nav>
@@ -52,7 +83,18 @@ const Navbar = () => {
 
       <nav className={`mobile-menu${isOpen ? ' show' : ''}`}>
         <Link to="/donate" className="mobile-link" onClick={closeMenu}>Donate</Link>
-        <Link to="/start-chapter" className="mobile-link" onClick={closeMenu}>Start a Chapter</Link>
+        
+        {/* Mobile Chapters Section */}
+        <div className="mobile-chapters">
+          <div className="mobile-chapters-header">Chapters</div>
+          <Link to="/tanzania-chapter" className="mobile-link mobile-sub-link" onClick={closeMenu}>
+            Our Chapters
+          </Link>
+          <Link to="/start-chapter" className="mobile-link mobile-sub-link" onClick={closeMenu}>
+            Start a Chapter
+          </Link>
+        </div>
+        
         <Link to="/resources" className="mobile-link" onClick={closeMenu}>Resources</Link>
         <Link to="/tell-us" className="mobile-link" onClick={closeMenu}>Tell Us</Link>
       </nav>

@@ -35,6 +35,45 @@ const Home = () => {
     }
   }, [])
 
+  // Smooth transition effect on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY
+      const windowHeight = window.innerHeight
+      const heroHeight = windowHeight * 0.85 // Hero section height
+      
+      // Calculate transition progress
+      const transitionStart = heroHeight * 0.8 // Start transition at 80% of hero height
+      const transitionEnd = heroHeight * 1.1 // End transition at 110% of hero height
+      
+      if (scrollY >= transitionStart) {
+        const progress = Math.min((scrollY - transitionStart) / (transitionEnd - transitionStart), 1)
+        const blurValue = progress * 8 // Max blur of 8px
+        
+        // Apply blur to bg-fade
+        const bgFade = document.querySelector('.bg-fade')
+        if (bgFade) {
+          bgFade.style.setProperty('--blur-value', `${blurValue}px`)
+        }
+        
+        // Apply blur to analytics section
+        const analyticsSection = document.querySelector('.analytics-section')
+        if (analyticsSection) {
+          analyticsSection.style.setProperty('--blur-value', `${blurValue}px`)
+        }
+      } else {
+        // Reset blur when not in transition zone
+        const bgFade = document.querySelector('.bg-fade')
+        const analyticsSection = document.querySelector('.analytics-section')
+        if (bgFade) bgFade.style.setProperty('--blur-value', '0px')
+        if (analyticsSection) analyticsSection.style.setProperty('--blur-value', '0px')
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   const handleWatchClick = () => {
     // Video interaction logic will be implemented here
     console.log('Watch button clicked')
@@ -56,22 +95,33 @@ const Home = () => {
         const bRect = b.getBoundingClientRect()
         // Start at middle-right of left-aligned card, or middle-left of right-aligned card
         const aIsLeft = a.classList.contains('left')
-        const startX = (aIsLeft ? aRect.right : aRect.left) - svgRect.left
-        const startY = aRect.top + aRect.height / 2 - svgRect.top
+        const startXRaw = (aIsLeft ? aRect.right : aRect.left) - svgRect.left
+        const startYRaw = aRect.top + aRect.height / 2 - svgRect.top
         const bIsRight = b.classList.contains('right')
-        const endX = (bIsRight ? bRect.left : bRect.right) - svgRect.left
-        const endY = bRect.top + bRect.height / 2 - svgRect.top
-        // Adjust SVG height to comfortably include vertical delta
-        const requiredH = Math.max(120, Math.abs(endY - startY) + 80)
+        const endXRaw = (bIsRight ? bRect.left : bRect.right) - svgRect.left
+        const endYRaw = bRect.top + bRect.height / 2 - svgRect.top
+        
+        // Tighten connector height so curve hugs endpoints
+        const requiredH = Math.max(60, Math.abs(endYRaw - startYRaw) + 24)
         svg.style.height = `${requiredH}px`
         const adjSvgRect = svg.getBoundingClientRect()
-        const sy = startY + (svgRect.top - adjSvgRect.top)
-        const ey = endY + (svgRect.top - adjSvgRect.top)
+        
+        // Convert page coords to current SVG coords after height change
+        const sy = startYRaw + (svgRect.top - adjSvgRect.top)
+        const ey = endYRaw + (svgRect.top - adjSvgRect.top)
+        
+        // Start/End at the dot centers outside card edges so lines bend from the side
+        const dotOffsetPx = 8
+        const startX = startXRaw + (aIsLeft ? dotOffsetPx : -dotOffsetPx)
+        const endX = endXRaw + (bIsRight ? -dotOffsetPx : dotOffsetPx)
+        
         const dx = Math.abs(endX - startX)
-        const c1x = startX + (aIsLeft ? dx * 0.35 : -dx * 0.35)
-        const c2x = endX - (bIsRight ? dx * 0.35 : -dx * 0.35)
-        const c1y = sy + (ey - sy) * 0.25
-        const c2y = ey - (ey - sy) * 0.25
+        const c1x = startX + (aIsLeft ? dx * 0.24 : -dx * 0.24)
+        const c2x = endX - (bIsRight ? dx * 0.24 : -dx * 0.24)
+        // Pull control points outward slightly to ensure the curve exits/enters from the side
+        const sidePull = 10
+        const c1y = sy + (aIsLeft ? 0 : 0) + (sy < ey ? sidePull : -sidePull) * 0
+        const c2y = ey + (aIsLeft ? 0 : 0) + (sy < ey ? -sidePull : sidePull) * 0
         newPaths[i] = `M ${startX} ${sy} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${endX} ${ey}`
       }
       setPaths(newPaths)
@@ -142,51 +192,90 @@ const Home = () => {
           </p>
           <h2 id="mission-heading" className="mission-heading">How we do it?</h2>
 
-          <div className="steps" role="list" aria-label="Steps to achieve our mission">
-            <div className="step-card left" ref={el => stepRefs.current[0] = el} role="listitem">
-              <div className="step-badge" aria-label="Step 1">Step 1</div>
-              <h3 className="step-title">Start in Katavi, Tanzania</h3>
-              <p className="step-body">Educate 42 secondary schools — nearly 10,000 students and teachers — with AI literacy and hands‑on workshops. Collect outcomes and refine the model.</p>
-            </div>
-
-            <svg className="step-connector conn-1" ref={el => connRefs.current[0] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-              <path d={paths[0]} />
+          <div className="journey-container">
+            <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+              <defs>
+                <linearGradient id="connectorGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#d2691e" />
+                  <stop offset="50%" stopColor="#cd853f" />
+                  <stop offset="100%" stopColor="#daa520" />
+                </linearGradient>
+              </defs>
             </svg>
+            <div className="journey-timeline">
+              <div className="timeline-item" ref={el => stepRefs.current[0] = el}>
+                <div className="timeline-marker">
+                  <div className="marker-number">01</div>
+                </div>
+                <div className="timeline-content">
+                  <h3 className="timeline-title">Start in Katavi, Tanzania</h3>
+                  <p className="timeline-description">Educate 42 secondary schools — nearly 10,000 students and teachers — with AI literacy and hands‑on workshops. Collect outcomes and refine the model.</p>
+                </div>
+              </div>
 
-            <div className="step-card right" ref={el => stepRefs.current[1] = el} role="listitem">
-              <div className="step-badge" aria-label="Step 2">Step 2</div>
-              <h3 className="step-title">Scale across Tanzania</h3>
-              <p className="step-body">Open a Tanzania chapter; bring AI clubs, teacher training, and community showcases to regions nationwide guided by Katavi results.</p>
-            </div>
+              <div className="timeline-connector" ref={el => connRefs.current[0] = el}>
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                  <path d="M50 0 L50 200" stroke="url(#connectorGradient)" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
 
-            <svg className="step-connector conn-2" ref={el => connRefs.current[1] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-              <path d={paths[1]} />
-            </svg>
+              <div className="timeline-item" ref={el => stepRefs.current[1] = el}>
+                <div className="timeline-marker">
+                  <div className="marker-number">02</div>
+                </div>
+                <div className="timeline-content">
+                  <h3 className="timeline-title">Scale across Tanzania</h3>
+                  <p className="timeline-description">Open a Tanzania chapter; bring AI clubs, teacher training, and community showcases to regions nationwide guided by Katavi results.</p>
+                </div>
+              </div>
 
-            <div className="step-card left" ref={el => stepRefs.current[2] = el} role="listitem">
-              <div className="step-badge" aria-label="Step 3">Step 3</div>
-              <h3 className="step-title">Data‑driven curriculum & partners</h3>
-              <p className="step-body">Use outcomes data to iterate a localized AI literacy curriculum. Partner with ministries, telcos, and universities to expand reach and credibility.</p>
-            </div>
+              <div className="timeline-connector" ref={el => connRefs.current[1] = el}>
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                  <path d="M50 0 L50 200" stroke="url(#connectorGradient)" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
 
-            <svg className="step-connector conn-3" ref={el => connRefs.current[2] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-              <path d={paths[2]} />
-            </svg>
+              <div className="timeline-item" ref={el => stepRefs.current[2] = el}>
+                <div className="timeline-marker">
+                  <div className="marker-number">03</div>
+                </div>
+                <div className="timeline-content">
+                  <h3 className="timeline-title">Data‑driven curriculum & partners</h3>
+                  <p className="timeline-description">Use outcomes data to iterate a localized AI literacy curriculum. Partner with ministries, telcos, and universities to expand reach and credibility.</p>
+                </div>
+              </div>
 
-            <div className="step-card right" ref={el => stepRefs.current[3] = el} role="listitem">
-              <div className="step-badge" aria-label="Step 4">Step 4</div>
-              <h3 className="step-title">Pan‑African chapters</h3>
-              <p className="step-body">Launch chapters across Sub‑Saharan Africa. Train local leaders, seed AI clubs, and deploy scalable content platforms with offline support.</p>
-            </div>
+              <div className="timeline-connector" ref={el => connRefs.current[2] = el}>
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                  <path d="M50 0 L50 200" stroke="url(#connectorGradient)" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
 
-            <svg className="step-connector conn-4" ref={el => connRefs.current[3] = el} viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-              <path d={paths[3]} />
-            </svg>
+              <div className="timeline-item" ref={el => stepRefs.current[3] = el}>
+                <div className="timeline-marker">
+                  <div className="marker-number">04</div>
+                </div>
+                <div className="timeline-content">
+                  <h3 className="timeline-title">Pan‑African chapters</h3>
+                  <p className="timeline-description">Launch chapters across Sub‑Saharan Africa. Train local leaders, seed AI clubs, and deploy scalable content platforms with offline support.</p>
+                </div>
+              </div>
 
-            <div className="step-card left" ref={el => stepRefs.current[4] = el} role="listitem">
-              <div className="step-badge" aria-label="Step 5">Step 5</div>
-              <h3 className="step-title">Workforce readiness at scale</h3>
-              <p className="step-body">Connect youth to AI‑augmented livelihoods via projects, apprenticeships, and micro‑credentials. Inform policy so Africa powers the world's workforce by 2050.</p>
+              <div className="timeline-connector" ref={el => connRefs.current[3] = el}>
+                <svg viewBox="0 0 100 200" preserveAspectRatio="none">
+                  <path d="M50 0 L50 200" stroke="url(#connectorGradient)" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
+
+              <div className="timeline-item" ref={el => stepRefs.current[4] = el}>
+                <div className="timeline-marker">
+                  <div className="marker-number">05</div>
+                </div>
+                <div className="timeline-content">
+                  <h3 className="timeline-title">Workforce readiness at scale</h3>
+                  <p className="timeline-description">Connect youth to AI‑augmented livelihoods via projects, apprenticeships, and micro‑credentials. Inform policy so Africa powers the world's workforce by 2050.</p>
+                </div>
+              </div>
             </div>
           </div>
       </div>

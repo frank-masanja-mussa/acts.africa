@@ -12,6 +12,8 @@
   backdrop-filter: blur(18px) saturate(120%);
   -webkit-backdrop-filter: blur(18px) saturate(120%);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .navbar-content {
@@ -59,6 +61,81 @@
 .nav-link:focus {
   outline: 2px solid #7dd3fc;
   outline-offset: 2px;
+}
+
+/* Dropdown Styles */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown-arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+  color: #7dd3fc;
+}
+
+.dropdown-container:hover .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  padding: 8px 0;
+  margin-top: 8px;
+  animation: dropdownSlide 0.2s ease-out;
+}
+
+.dropdown-item {
+  display: block;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 16px;
+  transition: all 0.25s ease;
+  border-radius: 8px;
+  margin: 0 8px;
+}
+
+.dropdown-item:hover {
+  background: rgba(125, 211, 252, 0.2);
+  color: #7dd3fc;
+  transform: translateX(4px);
+}
+
+.dropdown-item:focus {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 2px;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Toggle (hamburger) */
@@ -133,6 +210,32 @@
 .mobile-link:focus {
   outline: 2px solid #7dd3fc;
   outline-offset: 2px;
+}
+
+/* Mobile Chapters Styling */
+.mobile-chapters {
+  margin: 8px 0;
+}
+
+.mobile-chapters-header {
+  color: #7dd3fc;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobile-sub-link {
+  padding-left: 28px;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+.mobile-sub-link:hover {
+  color: #7dd3fc;
+  background: rgba(125, 211, 252, 0.1);
 }
 
 @keyframes menuSlide {
