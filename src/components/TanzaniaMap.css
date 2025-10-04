@@ -35,6 +35,16 @@
   filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.9));
 }
 
+.reach-marker.headquarters {
+  fill: #3b82f6;
+  filter: drop-shadow(0 0 14px rgba(59, 130, 246, 0.9));
+}
+
+.reach-marker.target {
+  fill: #d2691e;
+  filter: drop-shadow(0 0 10px rgba(210, 105, 30, 0.8));
+}
+
 .reach-marker.coming-soon {
   fill: #f59e0b;
   filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.7));
@@ -100,6 +110,14 @@
 
 .tooltip-content p.reached {
   color: #22c55e;
+}
+
+.tooltip-content p.headquarters {
+  color: #3b82f6;
+}
+
+.tooltip-content p.target {
+  color: #d2691e;
 }
 
 .tooltip-content p.coming-soon {

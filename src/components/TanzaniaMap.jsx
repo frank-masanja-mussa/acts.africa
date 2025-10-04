@@ -8,8 +8,9 @@ const TanzaniaMap = () => {
 
   // Tanzania regions with coordinates
   const regions = [
-    { id: 'katavi', name: 'Katavi', status: 'reached', coordinates: [31.4167, -6.3333] },
-    { id: 'dar-es-salaam', name: 'Dar es Salaam', status: 'coming-soon', coordinates: [39.2083, -6.7924] },
+    { id: 'dar-es-salaam', name: 'Dar es Salaam', status: 'reached', coordinates: [39.2083, -6.7924] },
+    { id: 'katavi', name: 'Katavi', status: 'target', coordinates: [31.4167, -6.3333] },
+    { id: 'california', name: 'California, USA', status: 'headquarters', coordinates: [-118.2437, 34.0522] },
     { id: 'arusha', name: 'Arusha', status: 'coming-soon', coordinates: [36.6833, -3.3869] },
     { id: 'dodoma', name: 'Dodoma', status: 'coming-soon', coordinates: [35.7419, -6.1630] },
     { id: 'mwanza', name: 'Mwanza', status: 'coming-soon', coordinates: [32.9000, -2.5167] },
@@ -101,10 +102,10 @@ const TanzaniaMap = () => {
           >
             <g>
               <circle
-                r={region.status === 'reached' ? 8 : 6}
+                r={region.status === 'reached' ? 8 : region.status === 'target' ? 7 : region.status === 'headquarters' ? 9 : 6}
                 className={`reach-marker ${region.status}`}
               />
-              {region.status === 'reached' && (
+              {(region.status === 'reached' || region.status === 'target' || region.status === 'headquarters') && (
                 <circle
                   r="16"
                   className="pulse-ring"
@@ -121,7 +122,9 @@ const TanzaniaMap = () => {
           <div className="tooltip-content">
             <h4>{hoveredRegion.name}</h4>
             <p className={hoveredRegion.status}>
-              {hoveredRegion.status === 'reached' ? 'Reached' : 'Coming Soon'}
+              {hoveredRegion.status === 'reached' ? 'Tanzania Office' : 
+               hoveredRegion.status === 'headquarters' ? 'US Headquarters' :
+               hoveredRegion.status === 'target' ? 'Impact Reached' : 'Coming Soon'}
             </p>
           </div>
         </div>

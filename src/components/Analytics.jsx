@@ -24,7 +24,7 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler)
 
-// In dev, Vite proxy maps /wb -> https://api.worldbank.org
+// Proxy configuration for acts.africa domain
 const WB_BASE = '/wb/v2'
 
 async function fetchIndicatorSeries(regionCode, indicatorCode, startYear, endYear) {
@@ -42,8 +42,14 @@ async function fetchIndicatorSeries(regionCode, indicatorCode, startYear, endYea
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
 async function fetchWorldBankJson(url, attempt = 1) {
-  // Use Vite dev proxy in dev; in prod, route via your server/edge proxy
-  const res = await fetch(url, { cache: 'no-store' })
+  // Use Netlify proxy for acts.africa domain
+  const res = await fetch(url, { 
+    cache: 'no-store',
+    headers: {
+      'Origin': 'https://acts.africa',
+      'Referer': 'https://acts.africa'
+    }
+  })
   if (res.status === 429 && attempt < 3) {
     await sleep(600 * attempt)
     return fetchWorldBankJson(url, attempt + 1)

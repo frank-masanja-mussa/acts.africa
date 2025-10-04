@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import './Home.css'
 import Navbar from './Navbar'
 import Analytics from './Analytics'
+import Footer from './Footer'
 
 const Home = () => {
   const audioRef = useRef(null)
@@ -155,9 +156,20 @@ const Home = () => {
             <span className="line">what about the uninformed</span>
             <span className="line highlight">2.5B?</span>
           </h1>
-          <button className="watch-button" onClick={handleWatchClick} aria-label="Watch our mission video">
-            Watch
-          </button>
+          <div className="hero-actions">
+            <button className="watch-button" onClick={handleWatchClick} aria-label="Watch our mission video">
+              Watch
+            </button>
+            <a 
+              href="https://gofund.me/e9f5257e9" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="donate-button"
+              aria-label="Donate to support our mission"
+            >
+              Donate Now
+            </a>
+          </div>
         </div>
       </section>
 
@@ -208,8 +220,8 @@ const Home = () => {
                   <div className="marker-number">01</div>
                 </div>
                 <div className="timeline-content">
-                  <h3 className="timeline-title">Start in Katavi, Tanzania</h3>
-                  <p className="timeline-description">Educate 42 secondary schools — nearly 10,000 students and teachers — with AI literacy and hands‑on workshops. Collect outcomes and refine the model.</p>
+                  <h3 className="timeline-title">Start from US & Tanzania, Reach Katavi</h3>
+                  <p className="timeline-description">From our dual headquarters in California and Dar es Salaam, we reach out to educate 42 secondary schools in Katavi region — nearly 10,000 students and teachers — with AI literacy and hands‑on workshops. Collect outcomes and refine the model.</p>
                 </div>
               </div>
 
@@ -225,7 +237,7 @@ const Home = () => {
                 </div>
                 <div className="timeline-content">
                   <h3 className="timeline-title">Scale across Tanzania</h3>
-                  <p className="timeline-description">Open a Tanzania chapter; bring AI clubs, teacher training, and community showcases to regions nationwide guided by Katavi results.</p>
+                  <p className="timeline-description">Open a Tanzania chapter; bring teacher training and community showcases to regions nationwide guided by our Katavi impact results.</p>
                 </div>
               </div>
 
@@ -257,7 +269,7 @@ const Home = () => {
                 </div>
                 <div className="timeline-content">
                   <h3 className="timeline-title">Pan‑African chapters</h3>
-                  <p className="timeline-description">Launch chapters across Sub‑Saharan Africa. Train local leaders, seed AI clubs, and deploy scalable content platforms with offline support.</p>
+                  <p className="timeline-description">Launch chapters across Sub‑Saharan Africa. Train local leaders and deploy scalable content platforms with offline support.</p>
                 </div>
               </div>
 
@@ -280,6 +292,8 @@ const Home = () => {
           </div>
       </div>
       </section>
+      
+      <Footer />
     </div>
   )
 }

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import TanzaniaMap from '../components/TanzaniaMap'
 import Icon from '@mdi/react'
-import { mdiSchool, mdiAccountGroup, mdiMapMarker, mdiTarget, mdiRocket } from '@mdi/js'
+import { mdiSchool, mdiAccountGroup, mdiMapMarker, mdiTarget, mdiRocket, mdiClipboardText, mdiChartLine } from '@mdi/js'
 import './pages.css'
 
 const TanzaniaChapter = () => {
@@ -55,7 +57,7 @@ const TanzaniaChapter = () => {
                       </div>
                     </div>
             <p className="card-description">
-              Our journey begins in Tanzania, starting with Katavi region. We're educating 42 secondary schools 
+              Our journey begins in Tanzania, with our headquarters in Dar es Salaam reaching out to Katavi region. We're educating 42 secondary schools 
               — nearly 10,000 students and teachers — with AI literacy and hands-on workshops.
             </p>
             <div className="progress-indicator">
@@ -84,6 +86,32 @@ const TanzaniaChapter = () => {
             </div>
           </div>
 
+          <div className="chapter-card">
+            <div className="card-header">
+              <h2>Our Operations</h2>
+              <div className="card-icon">
+                <Icon path={mdiMapMarker} size={1.5} />
+              </div>
+            </div>
+            <div className="operations-grid">
+              <div className="operation-item">
+                <h3>US Headquarters</h3>
+                <p><strong>Northridge, California, USA</strong></p>
+                <p>Our main office for global operations, strategic planning, and international coordination.</p>
+              </div>
+              <div className="operation-item">
+                <h3>Tanzania Office</h3>
+                <p><strong>Dar es Salaam, Tanzania</strong></p>
+                <p>Our regional office for local operations, program delivery, and community engagement.</p>
+              </div>
+              <div className="operation-item">
+                <h3>Impact Zone</h3>
+                <p><strong>Katavi Region</strong></p>
+                <p>Where we travel to deliver AI education programs to 42 secondary schools and 10,000+ students.</p>
+              </div>
+            </div>
+          </div>
+
                   <div className="impact-cards">
                     <div className="impact-card">
                       <div className="impact-icon">
@@ -109,15 +137,22 @@ const TanzaniaChapter = () => {
                   </div>
 
           <div className="chapter-actions">
-            <button className="primary-button" aria-label="Learn more about the Tanzania chapter">
-              View Progress
-            </button>
+            <Link to="/tanzania-survey" className="primary-button" aria-label="Take the AI Literacy Survey">
+              <Icon path={mdiClipboardText} size={1} />
+              Take AI Survey
+            </Link>
+            <Link to="/live-data" className="secondary-button" aria-label="View survey analytics">
+              <Icon path={mdiChartLine} size={1} />
+              View Analytics
+            </Link>
             <button className="secondary-button" aria-label="Support the Tanzania chapter">
               Support Chapter
             </button>
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

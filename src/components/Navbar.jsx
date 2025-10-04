@@ -1,15 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Logo from './Logo'
 import './Navbar.css'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isChaptersOpen, setIsChaptersOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   const toggleMenu = () => setIsOpen(!isOpen)
   const closeMenu = () => setIsOpen(false)
   const toggleChapters = () => setIsChaptersOpen(!isChaptersOpen)
   const closeChapters = () => setIsChaptersOpen(false)
+
+  // Handle scroll detection for navbar styling
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY
+      setIsScrolled(scrollTop > 50)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Prevent background scroll when menu is open
   useEffect(() => {
@@ -27,9 +40,11 @@ const Navbar = () => {
   }, [isOpen])
 
   return (
-    <header className="navbar">
+    <header className={`navbar${isScrolled ? ' scrolled' : ''}`}>
       <div className="navbar-content">
-        <Link to="/" className="brand" onClick={closeMenu}>ACTS.Africa</Link>
+        <Link to="/" onClick={closeMenu} className="brand-link">
+          <Logo size="medium" showText={true} />
+        </Link>
 
         <button 
           className={`nav-toggle${isOpen ? ' open' : ''}`} 
@@ -73,6 +88,7 @@ const Navbar = () => {
             )}
           </div>
           
+          <Link to="/live-data" className="nav-link">Live Data</Link>
           <Link to="/resources" className="nav-link">Resources</Link>
           <Link to="/tell-us" className="nav-link">Tell Us</Link>
         </nav>
@@ -95,6 +111,7 @@ const Navbar = () => {
           </Link>
         </div>
         
+        <Link to="/live-data" className="mobile-link" onClick={closeMenu}>Live Data</Link>
         <Link to="/resources" className="mobile-link" onClick={closeMenu}>Resources</Link>
         <Link to="/tell-us" className="mobile-link" onClick={closeMenu}>Tell Us</Link>
       </nav>

@@ -5,8 +5,10 @@ import Donate from './pages/Donate'
 import StartChapter from './pages/StartChapter'
 import ChapterApplication from './pages/ChapterApplication'
 import TanzaniaChapter from './pages/TanzaniaChapter'
+import TanzaniaSurvey from './pages/TanzaniaSurvey'
 import Resources from './pages/Resources'
 import TellUs from './pages/TellUs'
+import LiveData from './pages/LiveData'
 
 function App() {
   return (
@@ -17,8 +19,10 @@ function App() {
         <Route path="/start-chapter" element={<StartChapter />} />
         <Route path="/chapter-application" element={<ChapterApplication />} />
         <Route path="/tanzania-chapter" element={<TanzaniaChapter />} />
+        <Route path="/tanzania-survey" element={<TanzaniaSurvey />} />
         <Route path="/resources" element={<Resources />} />
         <Route path="/tell-us" element={<TellUs />} />
+        <Route path="/live-data" element={<LiveData />} />
       </Routes>
     </BrowserRouter>
   )

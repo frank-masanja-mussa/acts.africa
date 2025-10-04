@@ -1,0 +1,434 @@
+/* Tanzania Survey Page Styles */
+.survey-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, 
+    rgba(139, 69, 19, 0.20) 0%,
+    rgba(160, 82, 45, 0.25) 15%,
+    rgba(210, 180, 140, 0.30) 30%,
+    rgba(222, 184, 135, 0.35) 45%,
+    rgba(160, 82, 45, 0.32) 60%,
+    rgba(139, 69, 19, 0.28) 75%,
+    rgba(160, 82, 45, 0.30) 90%,
+    rgba(210, 180, 140, 0.32) 100%
+  );
+}
+
+.survey-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 120px 20px 60px;
+}
+
+.survey-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f5f5dc;
+  text-decoration: none;
+  font-weight: 600;
+  margin-bottom: 30px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.back-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transform: translateX(-4px);
+}
+
+.survey-header h1 {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  line-height: 1.2;
+}
+
+.survey-header p {
+  color: #daa520;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d2691e 0%, #cd853f 50%, #daa520 100%);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.step-indicator {
+  color: #f5f5dc;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.survey-form {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.survey-step h2 {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(218, 165, 32, 0.3);
+}
+
+.form-group {
+  margin-bottom: 32px;
+}
+
+.form-label {
+  display: block;
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+.radio-group,
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.radio-option,
+.checkbox-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.radio-option:hover,
+.checkbox-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(4px);
+}
+
+.radio-option input[type="radio"],
+.checkbox-option input[type="checkbox"] {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  accent-color: #d2691e;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"]:checked + .radio-text,
+.checkbox-option input[type="checkbox"]:checked + .checkbox-text {
+  color: #daa520;
+}
+
+.radio-option:has(input:checked),
+.checkbox-option:has(input:checked) {
+  background: rgba(218, 165, 32, 0.1);
+  border-color: rgba(218, 165, 32, 0.3);
+  box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.1);
+}
+
+.radio-text,
+.checkbox-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.english {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.swahili {
+  color: #f5f5dc;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.primary-button,
+.secondary-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #d2691e 0%, #cd853f 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+}
+
+.primary-button:hover {
+  background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(210, 105, 30, 0.4);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondary-button {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #f5f5dc;
+}
+
+.secondary-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 60px 40px;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.success-icon {
+  color: #22c55e;
+  margin-bottom: 24px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+
+.success-message h1 {
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.success-message p {
+  color: #f5f5dc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #d2691e 0%, #cd853f 100%);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(210, 105, 30, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .survey-container {
+    padding: 100px 16px 40px;
+  }
+  
+  .survey-header h1 {
+    font-size: 2rem;
+  }
+  
+  .survey-header p {
+    font-size: 1rem;
+  }
+  
+  .survey-form {
+    padding: 30px 24px;
+    border-radius: 16px;
+  }
+  
+  .survey-step h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+  
+  .form-group {
+    margin-bottom: 24px;
+  }
+  
+  .form-label {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  
+  .radio-option,
+  .checkbox-option {
+    padding: 12px 16px;
+  }
+  
+  .english {
+    font-size: 0.95rem;
+  }
+  
+  .swahili {
+    font-size: 0.85rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 30px;
+    padding-top: 20px;
+  }
+  
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .survey-container {
+    padding: 80px 12px 30px;
+  }
+  
+  .survey-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .survey-form {
+    padding: 24px 20px;
+    border-radius: 12px;
+  }
+  
+  .survey-step h2 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  
+  .radio-option,
+  .checkbox-option {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  
+  .radio-option input[type="radio"],
+  .checkbox-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .english {
+    font-size: 0.9rem;
+  }
+  
+  .swahili {
+    font-size: 0.8rem;
+  }
+  
+  .success-message {
+    padding: 40px 24px;
+  }
+  
+  .success-message h1 {
+    font-size: 2rem;
+  }
+  
+  .success-message p {
+    font-size: 1rem;
+  }
+}
+
+

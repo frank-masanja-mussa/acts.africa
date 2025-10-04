@@ -1,24 +1,17 @@
 [build]
-  # Directory to change to before starting a build
-  base = "."
-  
-  # Directory that contains the deploy-ready HTML files and assets
   publish = "dist"
-  
-  # Default build command
   command = "npm run build"
 
 [build.environment]
-  # Node.js version
   NODE_VERSION = "18"
 
-# Redirect rules for SPA (Single Page Application)
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/wb/*"
+  to = "https://api.worldbank.org/:splat"
   status = 200
+  force = true
+  headers = {X-From = "Netlify", Access-Control-Allow-Origin = "https://acts.africa, https://www.acts.africa"}
 
-# Headers for security and performance
 [[headers]]
   for = "/*"
   [headers.values]
@@ -26,15 +19,18 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-# Cache static assets
 [[headers]]
-  for = "/assets/*"
+  for = "/wb/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "https://acts.africa, https://www.acts.africa"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Max-Age = "86400"
 
-# Cache public files
-[[headers]]
-  for = "/public/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000"
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
