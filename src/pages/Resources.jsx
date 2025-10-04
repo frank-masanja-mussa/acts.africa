@@ -1,5 +1,6 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import Icon from '@mdi/react'
 import { mdiBookOpen, mdiVideo, mdiFileDocument, mdiCodeBraces, mdiLightbulb, mdiShare } from '@mdi/js'
 import './pages.css'
@@ -80,6 +81,8 @@ const Resources = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

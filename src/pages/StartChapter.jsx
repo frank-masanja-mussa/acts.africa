@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import AfricaMap from '../components/AfricaMap'
 import Icon from '@mdi/react'
 import { mdiRocket, mdiMapMarker, mdiAccountGroup, mdiTarget } from '@mdi/js'
@@ -88,6 +89,8 @@ const StartChapter = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

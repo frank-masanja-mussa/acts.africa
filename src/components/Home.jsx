@@ -133,11 +133,12 @@ const Home = () => {
   }, [])
 
   return (
-    <div className="home-container">
+    <div className="home-page">
       <Navbar />
-
-      {/* Hero: video background limited to top section */}
-      <section className="hero">
+      
+      <div className="home-content">
+        {/* Hero: video background limited to top section */}
+        <section className="hero">
       <video 
         className="background-video" 
         autoPlay 
@@ -290,8 +291,9 @@ const Home = () => {
               </div>
             </div>
           </div>
+        </div>
+        </section>
       </div>
-      </section>
       
       <Footer />
     </div>

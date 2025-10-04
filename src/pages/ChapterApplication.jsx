@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import './pages.css'
 
 const ChapterApplication = () => {
@@ -339,6 +340,8 @@ const ChapterApplication = () => {
           </form>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

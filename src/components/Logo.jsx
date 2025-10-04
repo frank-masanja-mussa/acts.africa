@@ -12,7 +12,7 @@ const Logo = ({ size = 'medium', showText = true, className = '' }) => {
     <div className={`logo-container ${sizeClasses[size]} ${className}`}>
       <div className="logo-icon">
         <img 
-          src="/ACTS-logo.svg" 
+          src="/ACTS-logo-BG.webp" 
           alt="ACTS Africa Logo" 
           width="100%" 
           height="100%"

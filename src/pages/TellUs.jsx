@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import Icon from '@mdi/react'
 import { mdiMessageText, mdiLightbulb, mdiHeart, mdiSend, mdiAccount } from '@mdi/js'
 import './pages.css'
@@ -141,6 +142,8 @@ const TellUs = () => {
           </form>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }

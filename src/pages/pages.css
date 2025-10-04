@@ -675,6 +675,7 @@
   .resource-category {
     padding: 24px 20px;
     border-radius: 16px;
+    min-height: 180px;
   }
 
   .resource-category h3 {
@@ -712,6 +713,7 @@
   .resource-category {
     padding: 20px 16px;
     border-radius: 12px;
+    min-height: 160px;
   }
 
   .resource-category h3 {
@@ -933,14 +935,120 @@ body.menu-open .chapter-page {
 }
 
 /* Resources Page Styles */
+.resources-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 50px 0;
+  flex-wrap: wrap;
+}
+
+.resources-actions .primary-button,
+.resources-actions .secondary-button {
+  min-width: 200px;
+  padding: 18px 36px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Mobile responsive for resources actions */
+@media (max-width: 768px) {
+  .resources-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0;
+  }
+  
+  .resources-actions .primary-button,
+  .resources-actions .secondary-button {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px 32px;
+    font-size: 1rem;
+  }
+  
+  .resources-categories {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 10px;
+  }
+  
+  .resources-main {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .resources-actions {
+    margin: 30px 0;
+    gap: 12px;
+  }
+  
+  .resources-actions .primary-button,
+  .resources-actions .secondary-button {
+    padding: 14px 28px;
+    font-size: 0.95rem;
+  }
+  
+  .resources-categories {
+    gap: 12px;
+    padding: 0 5px;
+  }
+  
+  .resources-main {
+    padding: 0 5px;
+  }
+  
+  .resources-content {
+    padding: 100px 10px 40px;
+  }
+}
+
 .resources-categories {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
   margin: 40px 0;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
+  padding: 0 20px;
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .resources-categories {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0 15px;
+  }
+  
+  .resources-actions {
+    gap: 18px;
+  }
+  
+  .resources-actions .primary-button,
+  .resources-actions .secondary-button {
+    min-width: 180px;
+    padding: 16px 30px;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1200px) {
+  .resources-categories {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .resources-categories {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    max-width: 1400px;
+  }
 }
 
 .resource-category {
@@ -948,7 +1056,7 @@ body.menu-open .chapter-page {
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
-  padding: 30px 24px;
+  padding: 32px 24px;
   text-align: center;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -960,6 +1068,8 @@ body.menu-open .chapter-page {
     0 20px 40px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-height: 200px;
+  justify-content: flex-start;
 }
 
 .resource-category::before {
