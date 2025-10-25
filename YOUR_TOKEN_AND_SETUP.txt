@@ -1,0 +1,74 @@
+═══════════════════════════════════════════════════════════════
+  🔐 YOUR SECURE TOKEN & COMPLETE SETUP
+═══════════════════════════════════════════════════════════════
+
+YOUR SECURE WRITE TOKEN:
+acts_africa_f9c732777f663f515fc9b8b6dce3c21e3e0a7d5f249f6e3ab5c5173cb97126d8
+
+═══════════════════════════════════════════════════════════════
+  📋 ENVIRONMENT VARIABLES (Copy to .env file)
+═══════════════════════════════════════════════════════════════
+
+VITE_SHEETS_WEBAPP_URL=https://script.google.com/macros/s/AKfycbyZGr8TJLA_nrPmmG3tcGPFZuoxq0qK55vcL9YQcJB7OBjv5P7ZQm_zWEVv7Onx_8kc/exec
+VITE_GOOGLE_SHEETS_ID=1DRjVUz5Twf1KnSEnEedauviAIX7ka7GpLgKqhlW853Q
+VITE_SHEETS_WRITE_TOKEN=acts_africa_f9c732777f663f515fc9b8b6dce3c21e3e0a7d5f249f6e3ab5c5173cb97126d8
+
+═══════════════════════════════════════════════════════════════
+  🌐 NETLIFY ENVIRONMENT VARIABLES (Copy to Netlify Dashboard)
+═══════════════════════════════════════════════════════════════
+
+Variable 1:
+Key:   VITE_SHEETS_WEBAPP_URL
+Value: https://script.google.com/macros/s/AKfycbyZGr8TJLA_nrPmmG3tcGPFZuoxq0qK55vcL9YQcJB7OBjv5P7ZQm_zWEVv7Onx_8kc/exec
+
+Variable 2:
+Key:   VITE_GOOGLE_SHEETS_ID
+Value: 1DRjVUz5Twf1KnSEnEedauviAIX7ka7GpLgKqhlW853Q
+
+Variable 3:
+Key:   VITE_SHEETS_WRITE_TOKEN
+Value: acts_africa_f9c732777f663f515fc9b8b6dce3c21e3e0a7d5f249f6e3ab5c5173cb97126d8
+
+═══════════════════════════════════════════════════════════════
+  📊 YOUR RESOURCES
+═══════════════════════════════════════════════════════════════
+
+Spreadsheet:
+https://docs.google.com/spreadsheets/d/1DRjVUz5Twf1KnSEnEedauviAIX7ka7GpLgKqhlW853Q/edit
+
+Web App URL:
+https://script.google.com/macros/s/AKfycbyZGr8TJLA_nrPmmG3tcGPFZuoxq0qK55vcL9YQcJB7OBjv5P7ZQm_zWEVv7Onx_8kc/exec
+
+Apps Script:
+https://script.google.com
+
+═══════════════════════════════════════════════════════════════
+  ✅ PRODUCTION-GRADE FEATURES
+═══════════════════════════════════════════════════════════════
+
+✅ Secure 64-character random token
+✅ Full read/write Google Sheets API
+✅ No mock data - 100% real data only
+✅ Token-based authentication for writes
+✅ Concurrent-safe operations
+✅ Production error handling
+✅ Real-time data refresh (every 5 minutes)
+✅ Comprehensive test page (/test-connection)
+✅ Complete documentation
+
+═══════════════════════════════════════════════════════════════
+  🧪 TEST YOUR SETUP
+═══════════════════════════════════════════════════════════════
+
+1. Create .env file in project root with the 3 variables above
+2. Run: npm run dev
+3. Visit: http://localhost:5173/test-connection
+4. Click "Run Connection Tests"
+5. All 4 tests should pass ✅
+
+Then check:
+http://localhost:5173/live-data
+Should show real data from your Google Sheet!
+
+═══════════════════════════════════════════════════════════════
+

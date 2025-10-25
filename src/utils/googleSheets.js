@@ -11,7 +11,8 @@ const GOOGLE_SHEETS_CONFIG = {
     IMPACT_METRICS: 'Impact Metrics!A1:Z100',
     STUDENT_DATA: 'Student Data!A1:Z100',
     SCHOOL_DATA: 'School Data!A1:Z100',
-    FUNDING_DATA: 'Funding Data!A1:Z100'
+    FUNDING_DATA: 'Funding Data!A1:Z100',
+    SURVEY_RESPONSES: 'Survey Responses!A1:Z1000'
   }
 }
 
@@ -144,6 +145,20 @@ export const getFundingData = async () => {
     return parseSheetsData(data)
   } catch (error) {
     console.error('Error fetching funding data:', error)
+    throw error
+  }
+}
+
+/**
+ * Get survey responses from Google Sheets
+ * @returns {Promise<Array<Object>>} Survey responses array
+ */
+export const getSurveyResponses = async () => {
+  try {
+    const data = await fetchGoogleSheetsData(GOOGLE_SHEETS_CONFIG.RANGES.SURVEY_RESPONSES)
+    return parseSheetsData(data)
+  } catch (error) {
+    console.error('Error fetching survey responses:', error)
     throw error
   }
 }

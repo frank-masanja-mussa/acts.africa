@@ -74,12 +74,48 @@ const TanzaniaSurvey = () => {
     setIsSubmitting(true)
     
     try {
-      // Simulate API call to Google Sheets
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Send survey data to Google Sheets
+      const webAppUrl = import.meta.env.VITE_SHEETS_WEBAPP_URL
+      const writeToken = import.meta.env.VITE_SHEETS_WRITE_TOKEN
       
-      // Here you would send data to Google Sheets
-      console.log('Survey data:', formData)
-      
+      if (!webAppUrl || !writeToken) {
+        throw new Error('Google Sheets not configured')
+      }
+
+      const surveyRow = [
+        new Date().toISOString(), // timestamp
+        'Tanzania', // country
+        formData.age || '',
+        formData.gender || '',
+        formData.role || '',
+        formData.internetUsage || '',
+        formData.aiExperience || '',
+        formData.devices.join(', ') || '',
+        formData.aiUnderstanding || '',
+        formData.barriers.join(', ') || '',
+        formData.topics.join(', ') || '',
+        formData.joinClub || '',
+        formData.learningPreference || '',
+        formData.expectations.join(', ') || ''
+      ]
+
+      const response = await fetch(`${webAppUrl}?token=${encodeURIComponent(writeToken)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sheet: 'Survey Responses',
+          rows: [surveyRow]
+        })
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to submit survey')
+      }
+
+      console.log('Survey submitted successfully')
       setIsSubmitted(true)
     } catch (error) {
       console.error('Error submitting survey:', error)

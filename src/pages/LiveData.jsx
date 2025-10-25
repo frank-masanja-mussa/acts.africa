@@ -16,7 +16,7 @@ import {
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CountriesAnalytics from '../components/CountriesAnalytics'
-import { getImpactMetrics, exportToCSV, getGoogleSheetsURL, isGoogleSheetsConfigured } from '../utils/googleSheets'
+import { getImpactMetrics, getSurveyResponses, exportToCSV, getGoogleSheetsURL, isGoogleSheetsConfigured } from '../utils/googleSheets'
 import './LiveData.css'
 
 const LiveData = () => {
@@ -61,8 +61,21 @@ const LiveData = () => {
           chaptersActive: impact.chaptersActive || 0
         })
 
-        // Placeholder for future survey sheet wiring
-        setSurveyData(prev => ({ ...prev }))
+        // Fetch survey responses
+        try {
+          const surveyResponses = await getSurveyResponses()
+          const tanzaniaResponses = surveyResponses.filter(r => r.country === 'Tanzania')
+          setSurveyData({
+            totalResponses: tanzaniaResponses.length,
+            countries: ['Tanzania'],
+            lastSurveyUpdate: tanzaniaResponses.length > 0 ? 
+              new Date(tanzaniaResponses[tanzaniaResponses.length - 1].timestamp).getTime() : 
+              null
+          })
+        } catch (surveyError) {
+          console.warn('Survey data not available yet:', surveyError)
+          setSurveyData(prev => ({ ...prev }))
+        }
 
         setLastUpdated(impact.lastUpdated ? new Date(impact.lastUpdated).getTime() : Date.now())
       } catch (err) {
