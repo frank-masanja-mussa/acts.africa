@@ -6,6 +6,7 @@ const GOOGLE_SHEETS_CONFIG = {
   // These would be your actual Google Sheets API credentials
   API_KEY: import.meta.env.VITE_GOOGLE_SHEETS_API_KEY || '',
   SPREADSHEET_ID: import.meta.env.VITE_GOOGLE_SHEETS_ID || '',
+  WEBAPP_URL: import.meta.env.VITE_SHEETS_WEBAPP_URL || '',
   RANGES: {
     IMPACT_METRICS: 'Impact Metrics!A1:Z100',
     STUDENT_DATA: 'Student Data!A1:Z100',
@@ -24,15 +25,26 @@ const GOOGLE_SHEETS_API_BASE = 'https://sheets.googleapis.com/v4/spreadsheets'
  */
 export const fetchGoogleSheetsData = async (range) => {
   try {
-    // Check if API credentials are available
+    // Prefer Apps Script Web App if configured
+    if (GOOGLE_SHEETS_CONFIG.WEBAPP_URL) {
+      const url = `${GOOGLE_SHEETS_CONFIG.WEBAPP_URL}?range=${encodeURIComponent(range)}`
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) {
+        throw new Error(`Apps Script error: ${response.status}`)
+      }
+      const data = await response.json()
+      // Expecting { values: [...] } compatible with Sheets API
+      return data
+    }
+
+    // Fallback to direct Sheets API using API key
     if (!GOOGLE_SHEETS_CONFIG.API_KEY || !GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID) {
-      console.warn('Google Sheets API credentials not configured. Using mock data.')
-      throw new Error('API credentials not configured')
+      console.warn('Google Sheets credentials not configured (WEBAPP_URL or API key/ID). Using mock data.')
+      throw new Error('Google Sheets credentials not configured')
     }
 
     const url = `${GOOGLE_SHEETS_API_BASE}/${GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID}/values/${range}?key=${GOOGLE_SHEETS_CONFIG.API_KEY}`
-    
-    const response = await fetch(url)
+    const response = await fetch(url, { cache: 'no-store' })
     
     if (!response.ok) {
       throw new Error(`Google Sheets API error: ${response.status}`)
@@ -90,8 +102,7 @@ export const getImpactMetrics = async () => {
     }
   } catch (error) {
     console.error('Error fetching impact metrics:', error)
-    // Return mock data if API fails or credentials not configured
-    return getMockData()
+    throw error
   }
 }
 
@@ -105,8 +116,7 @@ export const getStudentData = async () => {
     return parseSheetsData(data)
   } catch (error) {
     console.error('Error fetching student data:', error)
-    // Return empty array if API fails or credentials not configured
-    return []
+    throw error
   }
 }
 
@@ -120,8 +130,7 @@ export const getSchoolData = async () => {
     return parseSheetsData(data)
   } catch (error) {
     console.error('Error fetching school data:', error)
-    // Return empty array if API fails or credentials not configured
-    return []
+    throw error
   }
 }
 
@@ -135,8 +144,7 @@ export const getFundingData = async () => {
     return parseSheetsData(data)
   } catch (error) {
     console.error('Error fetching funding data:', error)
-    // Return empty array if API fails or credentials not configured
-    return []
+    throw error
   }
 }
 
@@ -178,16 +186,137 @@ export const getGoogleSheetsURL = () => {
   return `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID}/edit`
 }
 
-// Mock data for development/testing
-export const getMockData = () => {
-  return {
-    studentsReached: Math.floor(Math.random() * 5000) + 8000,
-    schoolsParticipating: Math.floor(Math.random() * 20) + 35,
-    teachersTrained: Math.floor(Math.random() * 200) + 300,
-    communityShowcases: Math.floor(Math.random() * 10) + 15,
-    workforcePlacements: Math.floor(Math.random() * 50) + 75,
-    fundingRaised: Math.floor(Math.random() * 50000) + 150000,
-    chaptersActive: Math.floor(Math.random() * 3) + 2,
-    lastUpdated: new Date().toISOString()
+
+/**
+ * Write data to Google Sheets via Apps Script Web App
+ * @param {string} sheetName - Name of the sheet to write to
+ * @param {Array<Array>} rows - Array of rows to append
+ * @returns {Promise<Object>} Response with status and inserted count
+ */
+export const writeToGoogleSheets = async (sheetName, rows) => {
+  try {
+    if (!GOOGLE_SHEETS_CONFIG.WEBAPP_URL) {
+      throw new Error('Google Sheets Web App URL not configured')
+    }
+
+    const token = import.meta.env.VITE_SHEETS_WRITE_TOKEN || ''
+    if (!token) {
+      throw new Error('Write token not configured')
+    }
+
+    const url = `${GOOGLE_SHEETS_CONFIG.WEBAPP_URL}?token=${encodeURIComponent(token)}`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sheet: sheetName,
+        rows: rows
+      })
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.error || `Write failed: ${response.status}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error writing to Google Sheets:', error)
+    throw error
   }
+}
+
+/**
+ * Update impact metrics in Google Sheets
+ * @param {Object} metrics - Impact metrics object
+ * @returns {Promise<Object>} Response from write operation
+ */
+export const updateImpactMetrics = async (metrics) => {
+  const now = new Date().toISOString()
+  const row = [
+    now,
+    metrics.studentsReached || 0,
+    metrics.schoolsParticipating || 0,
+    metrics.teachersTrained || 0,
+    metrics.communityShowcases || 0,
+    metrics.workforcePlacements || 0,
+    metrics.fundingRaised || 0,
+    metrics.chaptersActive || 0,
+    now
+  ]
+  
+  return writeToGoogleSheets('Impact Metrics', [row])
+}
+
+/**
+ * Add student data to Google Sheets
+ * @param {Object} student - Student data object
+ * @returns {Promise<Object>} Response from write operation
+ */
+export const addStudentData = async (student) => {
+  const row = [
+    student.studentId || '',
+    student.name || '',
+    student.school || '',
+    student.grade || '',
+    student.aiLiteracyScore || 0,
+    student.region || '',
+    student.enrollmentDate || new Date().toISOString(),
+    student.status || 'Active'
+  ]
+  
+  return writeToGoogleSheets('Student Data', [row])
+}
+
+/**
+ * Add school data to Google Sheets
+ * @param {Object} school - School data object
+ * @returns {Promise<Object>} Response from write operation
+ */
+export const addSchoolData = async (school) => {
+  const row = [
+    school.schoolId || '',
+    school.schoolName || '',
+    school.region || '',
+    school.studentsCount || 0,
+    school.teachersCount || 0,
+    school.partnershipDate || new Date().toISOString(),
+    school.status || 'Active'
+  ]
+  
+  return writeToGoogleSheets('School Data', [row])
+}
+
+/**
+ * Add funding data to Google Sheets
+ * @param {Object} funding - Funding data object
+ * @returns {Promise<Object>} Response from write operation
+ */
+export const addFundingData = async (funding) => {
+  const row = [
+    funding.date || new Date().toISOString(),
+    funding.source || '',
+    funding.amount || 0,
+    funding.purpose || '',
+    funding.status || 'Pending',
+    funding.notes || ''
+  ]
+  
+  return writeToGoogleSheets('Funding Data', [row])
+}
+
+/**
+ * Determine whether Google Sheets connectivity is configured
+ * Prefers Apps Script Web App; falls back to API key + Spreadsheet ID
+ * @returns {boolean}
+ */
+export const isGoogleSheetsConfigured = () => {
+  if (GOOGLE_SHEETS_CONFIG.WEBAPP_URL && GOOGLE_SHEETS_CONFIG.WEBAPP_URL.trim() !== '') return true
+  if (
+    GOOGLE_SHEETS_CONFIG.API_KEY && GOOGLE_SHEETS_CONFIG.API_KEY.trim() !== '' &&
+    GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID && GOOGLE_SHEETS_CONFIG.SPREADSHEET_ID.trim() !== ''
+  ) return true
+  return false
 }

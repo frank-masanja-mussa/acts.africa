@@ -90,6 +90,7 @@ const Navbar = () => {
           
           <Link to="/live-data" className="nav-link">Live Data</Link>
           <Link to="/resources" className="nav-link">Resources</Link>
+          <Link to="/lesson-plan" className="nav-link">Lesson Plan</Link>
           <Link to="/tell-us" className="nav-link">Tell Us</Link>
         </nav>
       </div>
@@ -113,6 +114,7 @@ const Navbar = () => {
         
         <Link to="/live-data" className="mobile-link" onClick={closeMenu}>Live Data</Link>
         <Link to="/resources" className="mobile-link" onClick={closeMenu}>Resources</Link>
+        <Link to="/lesson-plan" className="mobile-link" onClick={closeMenu}>Lesson Plan</Link>
         <Link to="/tell-us" className="mobile-link" onClick={closeMenu}>Tell Us</Link>
       </nav>
     </header>

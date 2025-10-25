@@ -62,18 +62,20 @@ Create the following sheets in your Google Sheets document:
 | date | source | amount | purpose | status |
 | 2024-01-15 | Donation | 50000 | Teacher Training | Received |
 
-## Step 6: Configure Environment Variables
+## Step 6: Configure Environment Variables (Vite)
 
-Create a `.env` file in your project root with the following variables:
+Copy `env.example` to `.env` in your project root and set:
 
 ```env
-REACT_APP_GOOGLE_SHEETS_API_KEY=your_api_key_here
-REACT_APP_GOOGLE_SHEETS_ID=your_spreadsheet_id_here
+VITE_GOOGLE_SHEETS_API_KEY=your_api_key_here
+VITE_GOOGLE_SHEETS_ID=your_spreadsheet_id_here
 ```
 
 Replace:
 - `your_api_key_here` with the API key from Step 3
 - `your_spreadsheet_id_here` with the spreadsheet ID from Step 4
+
+Note: Vite only exposes variables prefixed with `VITE_` to client code.
 
 ## Step 7: Make Your Google Sheets Public (Optional)
 
@@ -84,12 +86,47 @@ If you want to make the data publicly accessible without authentication:
 3. Set permission to "Viewer"
 4. Copy the link
 
+## Step 7b: Using Google Apps Script (Recommended)
+
+Use an Apps Script Web App as a proxy for controlled access and schema shaping.
+
+1. In Google Drive, create a new Apps Script project.
+2. Paste a handler like this:
+
+```javascript
+// Apps Script (Code.gs)
+// Deploy as Web App (Anyone with the link) to allow public GET reads
+
+const SPREADSHEET_ID = 'REPLACE_WITH_YOUR_SHEET_ID';
+
+function doGet(e) {
+  const range = (e.parameter.range || 'Impact Metrics!A1:Z100');
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const values = ss.getRange(range).getValues();
+  return ContentService
+    .createTextOutput(JSON.stringify({ values }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+3. Deploy → New deployment → Type: Web app.
+   - Execute as: Me
+   - Who has access: Anyone with the link
+4. Copy the Web app URL and set it as `VITE_SHEETS_WEBAPP_URL` in `.env`.
+5. Leave `VITE_GOOGLE_SHEETS_API_KEY` and `VITE_GOOGLE_SHEETS_ID` blank if you prefer Apps Script only.
+
 ## Step 8: Test the Integration
 
 1. Start your development server: `npm run dev`
 2. Navigate to `/live-data` in your browser
 3. Check the browser console for any API errors
 4. Verify that data is being fetched and displayed
+
+If the status still shows pending, ensure the sheet name matches `Impact Metrics` and the `VITE_` variables are set. The live page shows "Connected to Google Sheets" once credentials are valid.
+
+## Netlify Deployment Notes
+
+Set the same `VITE_GOOGLE_SHEETS_API_KEY` and `VITE_GOOGLE_SHEETS_ID` in Netlify Site Settings → Build & Deploy → Environment. Re-deploy after changes. Ensure your sheet is shared as "Anyone with the link – Viewer" or the API key has appropriate access.
 
 ## Troubleshooting
 

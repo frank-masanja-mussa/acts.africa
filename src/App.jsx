@@ -7,6 +7,7 @@ import ChapterApplication from './pages/ChapterApplication'
 import TanzaniaChapter from './pages/TanzaniaChapter'
 import TanzaniaSurvey from './pages/TanzaniaSurvey'
 import Resources from './pages/Resources'
+import LessonPlan from './pages/LessonPlan'
 import TellUs from './pages/TellUs'
 import LiveData from './pages/LiveData'
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/tanzania-chapter" element={<TanzaniaChapter />} />
         <Route path="/tanzania-survey" element={<TanzaniaSurvey />} />
         <Route path="/resources" element={<Resources />} />
+        <Route path="/lesson-plan" element={<LessonPlan />} />
         <Route path="/tell-us" element={<TellUs />} />
         <Route path="/live-data" element={<LiveData />} />
       </Routes>

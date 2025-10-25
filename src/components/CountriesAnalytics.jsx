@@ -45,10 +45,7 @@ const CountriesAnalytics = () => {
         setLoading(true)
         setError('')
         
-        // Simulate API call to Google Sheets
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        // For now, show empty data structure
+        // TODO: Implement actual Google Sheets integration for survey data
         // This will be populated from actual Google Sheets survey responses
         setSurveyData({
           tanzania: {

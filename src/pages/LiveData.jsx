@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import Icon from '@mdi/react'
 import { 
   mdiChartLine, 
@@ -17,7 +16,7 @@ import {
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CountriesAnalytics from '../components/CountriesAnalytics'
-import { getImpactMetrics, getMockData, exportToCSV, getGoogleSheetsURL } from '../utils/googleSheets'
+import { getImpactMetrics, exportToCSV, getGoogleSheetsURL, isGoogleSheetsConfigured } from '../utils/googleSheets'
 import './LiveData.css'
 
 const LiveData = () => {
@@ -28,7 +27,6 @@ const LiveData = () => {
     studentsReached: 0,
     schoolsParticipating: 0,
     teachersTrained: 0,
-    communityShowcases: 0,
     communityShowcases: 0,
     workforcePlacements: 0,
     fundingRaised: 0,
@@ -46,29 +44,36 @@ const LiveData = () => {
       try {
         setLoading(true)
         setError('')
-        
-        // For now, show that we're waiting for Google Sheets integration
-        // This will be replaced with actual survey data once Google Sheets is configured
+
+        const configured = isGoogleSheetsConfigured()
+        if (!configured) {
+          throw new Error('Google Sheets integration not configured. Please set up environment variables.')
+        }
+
+        const impact = await getImpactMetrics()
         setData({
-          studentsReached: 0,
-          schoolsParticipating: 0,
-          teachersTrained: 0,
-          communityShowcases: 0,
-          communityShowcases: 0,
-          workforcePlacements: 0,
-          fundingRaised: 0,
-          chaptersActive: 0
+          studentsReached: impact.studentsReached || 0,
+          schoolsParticipating: impact.schoolsParticipating || 0,
+          teachersTrained: impact.teachersTrained || 0,
+          communityShowcases: impact.communityShowcases || 0,
+          workforcePlacements: impact.workforcePlacements || 0,
+          fundingRaised: impact.fundingRaised || 0,
+          chaptersActive: impact.chaptersActive || 0
         })
-        
-        setSurveyData({
-          totalResponses: 0,
-          countries: [],
-          lastSurveyUpdate: null
-        })
-        
-        setLastUpdated(Date.now())
+
+        // Placeholder for future survey sheet wiring
+        setSurveyData(prev => ({ ...prev }))
+
+        setLastUpdated(impact.lastUpdated ? new Date(impact.lastUpdated).getTime() : Date.now())
       } catch (err) {
-        setError('Failed to fetch live data. Please try again later.')
+        console.error('Error fetching live data:', err)
+        if (err.message.includes('not configured')) {
+          setError('Google Sheets integration not configured. Please contact the administrator.')
+        } else if (err.message.includes('API error')) {
+          setError('Unable to connect to Google Sheets. Please check your internet connection and try again.')
+        } else {
+          setError('Failed to fetch live data. Please try again later.')
+        }
       } finally {
         setLoading(false)
       }
@@ -168,8 +173,17 @@ const LiveData = () => {
           </p>
           <div className="hero-status">
             <div className="status-indicator">
-              <Icon path={mdiAlertCircle} size={1} />
-              <span>Google Sheets Integration Pending</span>
+              {isGoogleSheetsConfigured() ? (
+                <>
+                  <Icon path={mdiCheckCircle} size={1} />
+                  <span>Connected to Google Sheets</span>
+                </>
+              ) : (
+                <>
+                  <Icon path={mdiAlertCircle} size={1} />
+                  <span>Google Sheets Integration Pending</span>
+                </>
+              )}
             </div>
             {lastUpdated && (
               <div className="last-updated">

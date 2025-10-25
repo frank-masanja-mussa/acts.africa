@@ -1,0 +1,41 @@
+═══════════════════════════════════════════════════════════════
+  NETLIFY ENVIRONMENT VARIABLES - COPY & PASTE
+═══════════════════════════════════════════════════════════════
+
+Go to: Netlify Dashboard → Your Site → Site Settings → Environment Variables
+
+Click "Add variable" and add these 4 variables:
+
+───────────────────────────────────────────────────────────────
+Variable 1:
+───────────────────────────────────────────────────────────────
+Key:   VITE_SHEETS_WEBAPP_URL
+Value: https://script.google.com/macros/s/AKfycbyZGr8TJLA_nrPmmG3tcGPFZuoxq0qK55vcL9YQcJB7OBjv5P7ZQm_zWEVv7Onx_8kc/exec
+
+───────────────────────────────────────────────────────────────
+Variable 2:
+───────────────────────────────────────────────────────────────
+Key:   VITE_GOOGLE_SHEETS_ID
+Value: 1DRjVUz5Twf1KnSEnEedauviAIX7ka7GpLgKqhlW853Q
+
+───────────────────────────────────────────────────────────────
+Variable 3:
+───────────────────────────────────────────────────────────────
+Key:   VITE_SHEETS_WRITE_TOKEN
+Value: acts_africa_f9c732777f663f515fc9b8b6dce3c21e3e0a7d5f249f6e3ab5c5173cb97126d8
+
+───────────────────────────────────────────────────────────────
+Variable 4 (Optional):
+───────────────────────────────────────────────────────────────
+Key:   VITE_GOOGLE_SHEETS_API_KEY
+Value: your_google_api_key_if_you_have_one
+
+═══════════════════════════════════════════════════════════════
+
+⚠️  IMPORTANT:
+- The WRITE_TOKEN must match what you set in Google Apps Script
+- After adding variables, trigger a new deploy
+- Never commit these values to GitHub
+
+═══════════════════════════════════════════════════════════════
+
