@@ -10,7 +10,6 @@ import Resources from './pages/Resources'
 import LessonPlan from './pages/LessonPlan'
 import TellUs from './pages/TellUs'
 import LiveData from './pages/LiveData'
-import TestConnection from './pages/TestConnection'
 
 function App() {
   return (
@@ -26,7 +25,6 @@ function App() {
         <Route path="/lesson-plan" element={<LessonPlan />} />
         <Route path="/tell-us" element={<TellUs />} />
         <Route path="/live-data" element={<LiveData />} />
-        <Route path="/test-connection" element={<TestConnection />} />
       </Routes>
     </BrowserRouter>
   )

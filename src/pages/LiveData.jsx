@@ -1,44 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import Icon from '@mdi/react'
-import { 
-  mdiChartLine, 
-  mdiTrendingUp, 
-  mdiAccountGroup, 
-  mdiPulse, 
-  mdiRefresh,
-  mdiDatabase,
-  mdiTable,
-  mdiDownload,
-  mdiEye,
-  mdiAlertCircle,
-  mdiCheckCircle
-} from '@mdi/js'
+import { mdiRefresh, mdiChartLineVariant } from '@mdi/js'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
-import CountriesAnalytics from '../components/CountriesAnalytics'
-import { getImpactMetrics, getSurveyResponses, exportToCSV, getGoogleSheetsURL, isGoogleSheetsConfigured } from '../utils/googleSheets'
+import SurveyAnalytics from '../components/SurveyAnalytics'
+import { getSurveyResponses, isGoogleSheetsConfigured } from '../utils/googleSheets'
 import './LiveData.css'
 
 const LiveData = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [lastUpdated, setLastUpdated] = useState(null)
-  const [data, setData] = useState({
-    studentsReached: 0,
-    schoolsParticipating: 0,
-    teachersTrained: 0,
-    communityShowcases: 0,
-    workforcePlacements: 0,
-    fundingRaised: 0,
-    chaptersActive: 0
-  })
   const [surveyData, setSurveyData] = useState({
     totalResponses: 0,
     countries: [],
     lastSurveyUpdate: null
   })
+  const [surveyResponses, setSurveyResponses] = useState([])
 
-  // Fetch data from Google Sheets
+  // Fetch survey responses
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,21 +30,10 @@ const LiveData = () => {
           throw new Error('Google Sheets integration not configured. Please set up environment variables.')
         }
 
-        const impact = await getImpactMetrics()
-        setData({
-          studentsReached: impact.studentsReached || 0,
-          schoolsParticipating: impact.schoolsParticipating || 0,
-          teachersTrained: impact.teachersTrained || 0,
-          communityShowcases: impact.communityShowcases || 0,
-          workforcePlacements: impact.workforcePlacements || 0,
-          fundingRaised: impact.fundingRaised || 0,
-          chaptersActive: impact.chaptersActive || 0
-        })
-
-        // Fetch survey responses
         try {
-          const surveyResponses = await getSurveyResponses()
-          const tanzaniaResponses = surveyResponses.filter(r => r.country === 'Tanzania')
+          const responses = await getSurveyResponses()
+          const tanzaniaResponses = responses.filter(r => r.country === 'Tanzania')
+          setSurveyResponses(tanzaniaResponses)
           setSurveyData({
             totalResponses: tanzaniaResponses.length,
             countries: ['Tanzania'],
@@ -75,9 +44,10 @@ const LiveData = () => {
         } catch (surveyError) {
           console.warn('Survey data not available yet:', surveyError)
           setSurveyData(prev => ({ ...prev }))
+          setSurveyResponses([])
         }
 
-        setLastUpdated(impact.lastUpdated ? new Date(impact.lastUpdated).getTime() : Date.now())
+        setLastUpdated(Date.now())
       } catch (err) {
         console.error('Error fetching live data:', err)
         if (err.message.includes('not configured')) {
@@ -102,53 +72,34 @@ const LiveData = () => {
     }
   }, [])
 
-  const formatNumber = (num) => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + 'M'
-    } else if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K'
+  const handleRefresh = async () => {
+    setLoading(true)
+    try {
+      const responses = await getSurveyResponses()
+      const tanzaniaResponses = responses.filter(r => r.country === 'Tanzania')
+      setSurveyResponses(tanzaniaResponses)
+      setSurveyData({
+        totalResponses: tanzaniaResponses.length,
+        countries: ['Tanzania'],
+        lastSurveyUpdate: tanzaniaResponses.length > 0 ? 
+          new Date(tanzaniaResponses[tanzaniaResponses.length - 1].timestamp).getTime() : 
+          null
+      })
+      setLastUpdated(Date.now())
+    } catch (err) {
+      console.error('Error refreshing data:', err)
+    } finally {
+      setLoading(false)
     }
-    return num.toString()
   }
 
-  const formatCurrency = (num) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(num)
-  }
-
-  const handleExportCSV = () => {
-    const exportData = [{
-      'Students Reached': data.studentsReached,
-      'Schools Participating': data.schoolsParticipating,
-      'Teachers Trained': data.teachersTrained,
-      'AI Clubs Formed': data.communityShowcases,
-      'Community Showcases': data.communityShowcases,
-      'Workforce Placements': data.workforcePlacements,
-      'Funding Raised': data.fundingRaised,
-      'Active Chapters': data.chaptersActive,
-      'Last Updated': lastUpdated ? new Date(lastUpdated).toLocaleString() : 'N/A'
-    }]
-    
-    exportToCSV(exportData, 'acts-africa-impact-metrics.csv')
-  }
-
-  const handleViewInSheets = () => {
-    window.open(getGoogleSheetsURL(), '_blank')
-  }
-
-  if (loading) {
+  if (loading && !surveyResponses.length) {
     return (
       <div className="live-data-page">
         <Navbar />
         <div className="loading-container">
-          <div className="loading-spinner">
-            <Icon path={mdiRefresh} size={2} className="spinning" />
-          </div>
-          <p>Loading live data from Google Sheets...</p>
+          <div className="loading-spinner"></div>
+          <p>Loading survey analytics...</p>
         </div>
         <Footer />
       </div>
@@ -160,13 +111,8 @@ const LiveData = () => {
       <div className="live-data-page">
         <Navbar />
         <div className="error-container">
-          <Icon path={mdiAlertCircle} size={3} />
-          <h2>Data Unavailable</h2>
+          <h2>Unable to Load Data</h2>
           <p>{error}</p>
-          <button onClick={() => window.location.reload()} className="retry-button">
-            <Icon path={mdiRefresh} size={1} />
-            Retry
-          </button>
         </div>
         <Footer />
       </div>
@@ -178,196 +124,42 @@ const LiveData = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="live-data-hero">
+      <section className="analytics-hero">
         <div className="hero-content">
-          <h1 className="hero-title">Survey Data Analytics</h1>
-          <p className="hero-subtitle">
-            Real-time insights from our AI Literacy & Appropriate Technology Needs survey
-          </p>
-          <div className="hero-status">
-            <div className="status-indicator">
-              {isGoogleSheetsConfigured() ? (
-                <>
-                  <Icon path={mdiCheckCircle} size={1} />
-                  <span>Connected to Google Sheets</span>
-                </>
-              ) : (
-                <>
-                  <Icon path={mdiAlertCircle} size={1} />
-                  <span>Google Sheets Integration Pending</span>
-                </>
-              )}
-            </div>
-            {lastUpdated && (
-              <div className="last-updated">
-                Last updated: {new Date(lastUpdated).toLocaleString()}
-              </div>
-            )}
+          <div className="hero-icon">
+            <Icon path={mdiChartLineVariant} size={3} />
           </div>
-        </div>
-      </section>
-
-      {/* Live Data Ticker */}
-      <section className="live-ticker-section">
-        <div className="live-ticker-container">
-          <div className="live-indicator">
-            <div className="live-dot"></div>
-            <Icon path={mdiPulse} size={0.8} />
-            <span>Live Data</span>
-          </div>
-          <div className="ticker-content">
-            <span>Survey responses: {surveyData.totalResponses}</span>
-            <span>• Countries: {surveyData.countries.length}</span>
-            <span>• Last update: {surveyData.lastSurveyUpdate ? new Date(surveyData.lastSurveyUpdate).toLocaleString() : 'Pending'}</span>
-            <span>• Data refreshes every 5 minutes</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Analytics Dashboard */}
-      <section className="analytics-dashboard">
-        <div className="dashboard-container">
-          <div className="dashboard-header">
-            <h2>AI Literacy Survey Analytics</h2>
-            <p>Real-time data from our Tanzania AI Literacy & Appropriate Technology Needs survey</p>
-            <div className="data-source">
-              <Icon path={mdiTable} size={1} />
-              <span>Survey data from Google Sheets</span>
+          <h1>Survey Analytics Dashboard</h1>
+          <p>Real-time insights from Tanzania AI Literacy & Appropriate Technology Needs survey</p>
+          
+          <div className="stats-overview">
+            <div className="stat-card">
+              <div className="stat-value">{surveyData.totalResponses}</div>
+              <div className="stat-label">Total Responses</div>
             </div>
-          </div>
-
-          {/* Survey Data Status */}
-          <div className="survey-status-card">
-            <div className="status-content">
-              <Icon path={mdiAlertCircle} size={2} />
-              <h3>Survey Data Integration Pending</h3>
-              <p>We're currently setting up Google Sheets integration to display real survey responses from our Tanzania AI Literacy & Appropriate Technology Needs survey.</p>
-              <p>Once configured, you'll see live data including:</p>
-              <ul>
-                <li>Total survey responses by country</li>
-                <li>AI understanding levels across demographics</li>
-                <li>Internet access patterns</li>
-                <li>Learning barriers and preferences</li>
-                <li>Willingness to join AI education programs</li>
-              </ul>
+            <div className="stat-card">
+              <div className="stat-value">{surveyData.countries.length}</div>
+              <div className="stat-label">Countries</div>
             </div>
-          </div>
-
-          {/* Key Metrics Grid - Hidden for now */}
-          <div className="metrics-grid" style={{display: 'none'}}>
-            <div className="metric-card primary">
-              <div className="metric-icon">
-                <Icon path={mdiAccountGroup} size={1.5} />
+            <div className="stat-card">
+              <div className="stat-value">
+                {lastUpdated ? new Date(lastUpdated).toLocaleDateString() : 'N/A'}
               </div>
-              <div className="metric-content">
-                <h3>Students Reached</h3>
-                <div className="metric-value">{formatNumber(data.studentsReached)}</div>
-                <p className="metric-description">Total students educated in AI literacy</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Icon path={mdiDatabase} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Schools Participating</h3>
-                <div className="metric-value">{data.schoolsParticipating}</div>
-                <p className="metric-description">Secondary schools in our program</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Icon path={mdiTrendingUp} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Teachers Trained</h3>
-                <div className="metric-value">{formatNumber(data.teachersTrained)}</div>
-                <p className="metric-description">Educators equipped with AI knowledge</p>
-              </div>
-            </div>
-
-            <div className="metric-card highlight">
-              <div className="metric-icon">
-                <Icon path={mdiChartLine} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Community Showcases</h3>
-                <div className="metric-value">{data.communityShowcases}</div>
-                <p className="metric-description">Community showcases of AI projects</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Icon path={mdiEye} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Community Showcases</h3>
-                <div className="metric-value">{data.communityShowcases}</div>
-                <p className="metric-description">Public demonstrations held</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Icon path={mdiPulse} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Workforce Placements</h3>
-                <div className="metric-value">{data.workforcePlacements}</div>
-                <p className="metric-description">Students placed in AI-related roles</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Icon path={mdiRefresh} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Funding Raised</h3>
-                <div className="metric-value">{formatCurrency(data.fundingRaised)}</div>
-                <p className="metric-description">Total funding secured</p>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Icon path={mdiDatabase} size={1.5} />
-              </div>
-              <div className="metric-content">
-                <h3>Active Chapters</h3>
-                <div className="metric-value">{data.chaptersActive}</div>
-                <p className="metric-description">Chapters currently operating</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Data Export Section */}
-          <div className="export-section">
-            <h3>Export Data</h3>
-            <p>Download our live data for your own analysis</p>
-            <div className="export-buttons">
-              <button className="export-btn" onClick={handleExportCSV}>
-                <Icon path={mdiDownload} size={1} />
-                Download CSV
-              </button>
-              <button className="export-btn" onClick={handleViewInSheets}>
-                <Icon path={mdiTable} size={1} />
-                View in Google Sheets
-              </button>
+              <div className="stat-label">Last Updated</div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Countries Analytics Section */}
-      <section className="countries-section">
-        <div className="dashboard-container">
-          <CountriesAnalytics />
+        
+        <div className="refresh-section">
+          <button onClick={handleRefresh} className="refresh-btn" disabled={loading}>
+            <Icon path={mdiRefresh} size={1} />
+            {loading ? 'Refreshing...' : 'Refresh Data'}
+          </button>
         </div>
       </section>
+
+      {/* Main Analytics Section */}
+      <SurveyAnalytics surveyData={surveyResponses} />
 
       <Footer />
     </div>

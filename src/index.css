@@ -1,3 +1,16 @@
+:root {
+  --color-bg: #0b1020;
+  --color-surface: #ffffff;
+  --color-muted-surface: #f8f9fa;
+  --color-primary: #d2691e;        /* burnt orange */
+  --color-primary-dark: #b85c1a;   /* darker burnt orange */
+  --color-secondary: #daa520;      /* goldenrod */
+  --color-accent: #cd853f;         /* terracotta */
+  --color-text: #1a1a1a;
+  --color-muted-text: #6c757d;
+  --color-border: #e9ecef;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +23,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0b1020;
+  background: var(--color-bg);
 }
 
 #root {

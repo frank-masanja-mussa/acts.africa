@@ -99,15 +99,17 @@ const TanzaniaSurvey = () => {
         formData.expectations.join(', ') || ''
       ]
 
-      const response = await fetch(`${webAppUrl}?token=${encodeURIComponent(writeToken)}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sheet: 'Survey Responses',
-          rows: [surveyRow]
-        })
+      // Use GET with redirect to avoid CORS preflight
+      const params = new URLSearchParams({
+        token: writeToken,
+        action: 'write',
+        sheet: 'Survey Responses',
+        data: JSON.stringify([surveyRow])
+      })
+      
+      const response = await fetch(`${webAppUrl}?${params.toString()}`, {
+        method: 'GET',
+        redirect: 'follow'
       })
 
       if (!response.ok) {
