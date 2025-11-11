@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { PieChart, Pie, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LabelList } from 'recharts'
 import './SurveyAnalytics.css'
 
 const COLORS = {
@@ -25,15 +25,42 @@ const CHART_COLORS = [
   '#9c6b3b'
 ]
 
-const AI_LEVEL_KEYS = [
-  'No understanding',
-  'Basic understanding',
-  'Intermediate understanding',
-  'Advanced understanding',
-  'Expert level'
+// Normalization helpers to align raw sheet values into consistent buckets
+const normalizeAI = (val) => {
+  const v = (val || '').toLowerCase()
+  if (v.includes('no familiarity') || v === 'none' || v.includes('no understanding')) return 'No understanding'
+  if (v.includes('basic')) return 'Basic understanding'
+  if (v.includes('comfortable') || v.includes('beginner') || v.includes('intermediate')) return 'Intermediate understanding'
+  if (v.includes('lead') || v.includes('advanced') || v.includes('expert')) return 'Advanced understanding'
+  return 'Other'
+}
+
+const normalizeInternet = (val) => {
+  const v = (val || '').toLowerCase()
+  if (v.startsWith('daily')) return 'Daily'
+  if (v.startsWith('weekly')) return 'Weekly'
+  if (v.startsWith('monthly')) return 'Monthly'
+  if (v.startsWith('rarely') || v.startsWith('never')) return 'Rarely/Never'
+  return 'Other'
+}
+
+// Age normalization -> bucket into ranges for clearer charts
+const AGE_BUCKETS = [
+  { label: '12–14', min: 12, max: 14 },
+  { label: '15–17', min: 15, max: 17 },
+  { label: '18–20', min: 18, max: 20 },
+  { label: '21–25', min: 21, max: 25 },
+  { label: '26–30', min: 26, max: 30 },
+  { label: '31–40', min: 31, max: 40 },
+  { label: '41+', min: 41, max: 200 }
 ]
 
-const INTERNET_KEYS = ['Daily', 'Weekly', 'Monthly', 'Rarely', 'Never']
+const normalizeAgeToBucket = (ageValue) => {
+  const n = Number(String(ageValue).trim())
+  if (Number.isNaN(n)) return 'Unknown'
+  const bucket = AGE_BUCKETS.find(b => n >= b.min && n <= b.max)
+  return bucket ? bucket.label : 'Unknown'
+}
 
 const SurveyAnalytics = ({ surveyData = [] }) => {
   const [filters, setFilters] = useState({ role: 'All', gender: 'All', age: 'All' })
@@ -56,7 +83,11 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
       if (r.gender) genders.add(r.gender)
       if (r.age) ages.add(r.age)
     })
-    const sortAlpha = arr => Array.from(arr).filter(Boolean).sort((a, b) => a.localeCompare(b))
+    // Robust sorter: handles strings and numbers; numeric-aware for mixed inputs
+    const sortAlpha = arr =>
+      Array.from(arr)
+        .filter(v => v !== undefined && v !== null && v !== '')
+        .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }))
     return {
       roles: ['All', ...sortAlpha(roles)],
       genders: ['All', ...sortAlpha(genders)],
@@ -84,6 +115,56 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
     })
   }, [surveyData, filters])
 
+  // Helpers must be defined before use to avoid TDZ issues
+  const objectToSeries = (obj) => {
+    return Object.entries(obj)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+  }
+  const groupToStacked = (groupObj, labelKey = 'role') => {
+    return Object.entries(groupObj).map(([label, series]) => ({ [labelKey]: label, ...series }))
+  }
+  const objectToSeriesWithOrder = (obj, order) => {
+    const items = []
+    order.forEach(label => {
+      if (Object.prototype.hasOwnProperty.call(obj, label)) {
+        items.push({ name: label, value: obj[label] })
+      }
+    })
+    // Append any unexpected labels at the end
+    Object.entries(obj).forEach(([name, value]) => {
+      if (!order.includes(name)) items.push({ name, value })
+    })
+    return items
+  }
+  const groupToStackedWithOrder = (groupObj, labelKey, order) => {
+    const map = new Map(Object.entries(groupObj))
+    const rows = []
+    order.forEach(label => {
+      if (map.has(label)) rows.push({ [labelKey]: label, ...map.get(label) })
+    })
+    // Append any unexpected labels at the end
+    map.forEach((series, label) => {
+      if (!order.includes(label)) rows.push({ [labelKey]: label, ...series })
+    })
+    return rows
+  }
+  const groupToPercentStacked = (groupObj, labelKey, keys) => {
+    return Object.entries(groupObj).map(([label, series]) => {
+      const total = Object.values(series).reduce((sum, val) => sum + val, 0)
+      const row = { [labelKey]: label }
+      keys.forEach(key => {
+        const count = series[key] || 0
+        row[key] = total ? Number(((count / total) * 100).toFixed(1)) : 0
+      })
+      return row
+    }).sort((a, b) => {
+      const sumA = keys.reduce((sum, key) => sum + (a[key] || 0), 0)
+      const sumB = keys.reduce((sum, key) => sum + (b[key] || 0), 0)
+      return sumB - sumA
+    })
+  }
+
   const analytics = useMemo(() => {
     const data = filteredData
     if (!data || data.length === 0) return emptyAnalytics
@@ -110,23 +191,24 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
 
     for (let i = 0; i < data.length; i++) {
       const response = data[i]
-      ageGroups[response.age] = (ageGroups[response.age] || 0) + 1
+      const ageBucket = normalizeAgeToBucket(response.age)
+      ageGroups[ageBucket] = (ageGroups[ageBucket] || 0) + 1
       genderGroups[response.gender] = (genderGroups[response.gender] || 0) + 1
       roleGroups[response.role] = (roleGroups[response.role] || 0) + 1
 
-      const aiLevel = response.aiUnderstanding || 'Unknown'
+      const aiLevel = normalizeAI(response.aiUnderstanding || 'Unknown')
       aiLevels[aiLevel] = (aiLevels[aiLevel] || 0) + 1
       if (!aiByRole[response.role]) aiByRole[response.role] = {}
       aiByRole[response.role][aiLevel] = (aiByRole[response.role][aiLevel] || 0) + 1
-      if (!aiByAge[response.age]) aiByAge[response.age] = {}
-      aiByAge[response.age][aiLevel] = (aiByAge[response.age][aiLevel] || 0) + 1
+      if (!aiByAge[ageBucket]) aiByAge[ageBucket] = {}
+      aiByAge[ageBucket][aiLevel] = (aiByAge[ageBucket][aiLevel] || 0) + 1
 
-      const internet = response.internetUsage || 'Unknown'
+      const internet = normalizeInternet(response.internetUsage || 'Unknown')
       internetLevels[internet] = (internetLevels[internet] || 0) + 1
       if (!internetByRole[response.role]) internetByRole[response.role] = {}
       internetByRole[response.role][internet] = (internetByRole[response.role][internet] || 0) + 1
-      if (!internetByAge[response.age]) internetByAge[response.age] = {}
-      internetByAge[response.age][internet] = (internetByAge[response.age][internet] || 0) + 1
+      if (!internetByAge[ageBucket]) internetByAge[ageBucket] = {}
+      internetByAge[ageBucket][internet] = (internetByAge[ageBucket][internet] || 0) + 1
 
       const barriers = response.barriers ? response.barriers.split(',').map(b => b.trim()).filter(Boolean) : []
       barriers.forEach(barrier => {
@@ -148,29 +230,58 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
       learningPrefsByRole[response.role][pref] = (learningPrefsByRole[response.role][pref] || 0) + 1
     }
 
+    // Derive dynamic keys for stacked bars to match processed categories exactly
+    const aiKeys = Object.keys(aiLevels)
+    const internetKeys = Object.keys(internetLevels)
+    const ageOrder = AGE_BUCKETS.map(b => b.label).concat(['Unknown'])
+
+    const barrierSeriesRaw = objectToSeries(allBarriers).sort((a, b) => b.value - a.value).slice(0, 8)
+    const barrierTotal = barrierSeriesRaw.reduce((sum, item) => sum + item.value, 0)
+    const barrierSeries = barrierSeriesRaw.map(item => ({
+      name: item.name,
+      count: item.value,
+      percent: barrierTotal ? Number(((item.value / barrierTotal) * 100).toFixed(1)) : 0
+    }))
+    const barrierKeys = barrierSeries.map(item => item.name)
+
+    const deviceSeriesRaw = objectToSeries(allDevices).sort((a, b) => b.value - a.value).slice(0, 8)
+    const deviceTotal = deviceSeriesRaw.reduce((sum, item) => sum + item.value, 0)
+    const deviceSeries = deviceSeriesRaw.map(item => ({
+      name: item.name,
+      count: item.value,
+      percent: deviceTotal ? Number(((item.value / deviceTotal) * 100).toFixed(1)) : 0
+    }))
+    const deviceKeys = deviceSeries.map(item => item.name)
+
     return {
       demographics: {
-        byAge: objectToSeries(ageGroups),
+        byAge: objectToSeriesWithOrder(ageGroups, ageOrder),
         byGender: objectToSeries(genderGroups),
         byRole: objectToSeries(roleGroups)
       },
       aiAwareness: {
         byRole: groupToStacked(aiByRole),
-        byAge: groupToStacked(aiByAge, 'age'),
-        overall: objectToSeries(aiLevels)
+        byAge: groupToStackedWithOrder(aiByAge, 'age', ageOrder),
+        overall: objectToSeries(aiLevels),
+        keys: aiKeys
       },
       internetUsage: {
         byRole: groupToStacked(internetByRole),
-        byAge: groupToStacked(internetByAge, 'age'),
-        overall: objectToSeries(internetLevels)
+        byAge: groupToStackedWithOrder(internetByAge, 'age', ageOrder),
+        overall: objectToSeries(internetLevels),
+        keys: internetKeys
       },
       barriers: {
-        all: objectToSeries(allBarriers).sort((a, b) => b.value - a.value).slice(0, 10),
-        byRole: Object.entries(barriersByRole).map(([role, obj]) => ({ role, barriers: objectToSeries(obj) }))
+        all: barrierSeries,
+        totalCount: barrierTotal,
+        keys: barrierKeys,
+        byRole: groupToPercentStacked(barriersByRole, 'role', barrierKeys)
       },
       devices: {
-        all: objectToSeries(allDevices).sort((a, b) => b.value - a.value),
-        byRole: Object.entries(devicesByRole).map(([role, obj]) => ({ role, devices: objectToSeries(obj) }))
+        all: deviceSeries,
+        totalCount: deviceTotal,
+        keys: deviceKeys,
+        byRole: groupToPercentStacked(devicesByRole, 'role', deviceKeys)
       },
       learningPreferences: {
         all: objectToSeries(learningPrefs),
@@ -179,15 +290,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
     }
   }, [filteredData, emptyAnalytics])
 
-  const objectToSeries = (obj) => {
-    // Convert map to sorted series to stabilize chart ordering on large datasets
-    return Object.entries(obj)
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value)
-  }
-  const groupToStacked = (groupObj, labelKey = 'role') => {
-    return Object.entries(groupObj).map(([label, series]) => ({ [labelKey]: label, ...series }))
-  }
+  // (moved helpers above analytics useMemo)
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -205,9 +308,25 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
     return null
   }
 
-  const axisTick = { fill: '#6c757d', fontSize: 12 }
+  const axisTick = { fill: '#6c757d', fontSize: isMobile ? 10 : 12 }
   const gridStroke = '#eee'
-  const legendStyle = { color: '#5a3e2b', fontSize: 12 }
+  const legendStyle = { color: '#5a3e2b', fontSize: isMobile ? 10 : 12 }
+  const formatCategory = (value) => {
+    const s = String(value ?? '')
+    if (s.length <= (isMobile ? 10 : 18)) return s
+    return s.slice(0, isMobile ? 10 : 18) + '…'
+  }
+  const chartMargin = { top: 10, right: 10, left: 10, bottom: isMobile ? 20 : 30 }
+  const barrierChartData = analytics.barriers?.all || []
+  const deviceChartData = analytics.devices?.all || []
+  const barrierHasData = barrierChartData.length > 1
+  const deviceHasData = deviceChartData.length > 1
+  const percentTickFormatter = (value) => `${value}%`
+  const barrierTicks = isMobile ? [0, 50, 100] : [0, 25, 50, 75, 100]
+  const tooltipLabelFormatter = (label, payload) => {
+    const count = payload && payload[0] ? payload[0].payload.count : 0
+    return `${label} · ${count} responses`
+  }
 
   return (
     <div className="survey-analytics">
@@ -304,13 +423,13 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <h4>By Role</h4>
           <div className="chart-content">
               <ResponsiveContainer width="100%" height={barHeight}>
-                <BarChart data={analytics.aiAwareness.byRole} barSize={20} barCategoryGap="10%">
+                <BarChart data={analytics.aiAwareness.byRole} barSize={isMobile ? 14 : 20} barCategoryGap={isMobile ? '20%' : '10%'} margin={chartMargin}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis dataKey="role" tick={axisTick} stroke="#dadce0" />
+                <XAxis dataKey="role" tick={axisTick} stroke="#dadce0" tickFormatter={formatCategory} />
                 <YAxis tick={axisTick} stroke="#dadce0" />
                 <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #dadce0', borderRadius: '8px' }} />
                 <Legend wrapperStyle={legendStyle} iconType="circle" />
-                {AI_LEVEL_KEYS.map((key, idx) => (
+                {(analytics.aiAwareness.keys || []).map((key, idx) => (
                   <Bar key={key} dataKey={key} fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[4, 4, 0, 0]} />
                 ))}
               </BarChart>
@@ -322,13 +441,13 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <h4>By Age Group</h4>
           <div className="chart-content">
             <ResponsiveContainer width="100%" height={barHeight}>
-              <BarChart data={analytics.aiAwareness.byAge} barSize={20} barCategoryGap="10%">
+              <BarChart data={analytics.aiAwareness.byAge} barSize={isMobile ? 14 : 20} barCategoryGap={isMobile ? '20%' : '10%'} margin={chartMargin}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis dataKey="age" tick={axisTick} stroke="#dadce0" />
+                <XAxis dataKey="age" tick={axisTick} stroke="#dadce0" tickFormatter={formatCategory} />
                 <YAxis tick={axisTick} stroke="#dadce0" />
                 <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #dadce0', borderRadius: '8px' }} />
                 <Legend wrapperStyle={legendStyle} iconType="circle" />
-                {AI_LEVEL_KEYS.map((key, idx) => (
+                {(analytics.aiAwareness.keys || []).map((key, idx) => (
                   <Bar key={key} dataKey={key} fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[4, 4, 0, 0]} />
                 ))}
               </BarChart>
@@ -360,13 +479,13 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
             <h4>By Role</h4>
             <div className="chart-content">
             <ResponsiveContainer width="100%" height={barHeight}>
-                <BarChart data={analytics.internetUsage.byRole} barSize={28}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                  <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" />
-                  <YAxis tick={axisTick} stroke="#e9ecef" />
+              <BarChart data={analytics.internetUsage.byRole} barSize={isMobile ? 20 : 28} margin={chartMargin}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" tickFormatter={formatCategory} />
+                <YAxis tick={axisTick} stroke="#e9ecef" />
                   <Tooltip />
                   <Legend wrapperStyle={legendStyle} />
-                  {INTERNET_KEYS.map((key, idx) => (
+                {(analytics.internetUsage.keys || []).map((key, idx) => (
                     <Bar key={key} dataKey={key} fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[6, 6, 0, 0]} />
                   ))}
                 </BarChart>
@@ -382,19 +501,24 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         <div className="chart-container-full">
           <h4>Top Barriers</h4>
           <div className="chart-content">
+            {barrierHasData ? (
               <ResponsiveContainer width="100%" height={barHeight}>
-                <BarChart data={analytics.barriers.all} layout="vertical" barSize={24} barCategoryGap="12%">
-                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis type="number" tick={axisTick} stroke="#dadce0" />
-                <YAxis dataKey="name" type="category" width={isMobile ? 120 : 180} tick={axisTick} stroke="#dadce0" />
-                <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #dadce0', borderRadius: '8px' }} />
-                <Bar dataKey="value" radius={[0, 8, 8, 0]}>
-                  {analytics.barriers.all.map((_, index) => (
-                    <Cell key={`bar-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                <BarChart data={barrierChartData} layout="vertical" barSize={isMobile ? 18 : 24} barCategoryGap={isMobile ? '16%' : '12%'} margin={chartMargin}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                  <XAxis type="number" domain={[0, 100]} ticks={barrierTicks} tickFormatter={percentTickFormatter} tick={axisTick} stroke="#dadce0" />
+                  <YAxis dataKey="name" type="category" width={isMobile ? 140 : 220} tick={axisTick} stroke="#dadce0" tickFormatter={formatCategory} />
+                  <Tooltip formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Share']} labelFormatter={tooltipLabelFormatter} />
+                  <Bar dataKey="percent" radius={[0, 8, 8, 0]}>
+                    <LabelList dataKey="count" position="right" fill="#5a3e2b" fontSize={isMobile ? 10 : 12} />
+                    {barrierChartData.map((_, index) => (
+                      <Cell key={`bar-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="chart-empty">Not enough barrier data to visualize yet.</div>
+            )}
           </div>
         </div>
       </section>
@@ -405,19 +529,27 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         <div className="chart-container-full">
           <h4>Device Availability</h4>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={deviceBarHeight}>
-              <BarChart data={analytics.devices.all} barSize={32}>
-                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis dataKey="name" tick={axisTick} stroke="#e9ecef" />
-                <YAxis tick={axisTick} stroke="#e9ecef" />
-                <Tooltip />
-                <Bar dataKey="value" fill={COLORS.secondary} radius={[6, 6, 0, 0]}>
-                  {analytics.devices.all.map((_, index) => (
-                    <Cell key={`dev-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {deviceHasData ? (
+              <ResponsiveContainer width="100%" height={deviceBarHeight}>
+                <BarChart data={deviceChartData} layout="vertical" barSize={isMobile ? 18 : 26} barCategoryGap={isMobile ? '16%' : '12%'} margin={chartMargin}>
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                  <XAxis type="number" domain={[0, 100]} ticks={barrierTicks} tickFormatter={percentTickFormatter} tick={axisTick} stroke="#e9ecef" />
+                  <YAxis dataKey="name" type="category" width={isMobile ? 140 : 220} tick={axisTick} stroke="#e9ecef" tickFormatter={formatCategory} />
+                  <Tooltip formatter={(value) => [`${Number(value).toFixed(1)}%`, 'Share']} labelFormatter={(label, payload) => {
+                    const count = payload && payload[0] ? payload[0].payload.count : 0
+                    return `${label} · ${count} mentions`
+                  }} />
+                  <Bar dataKey="percent" fill={COLORS.secondary} radius={[0, 8, 8, 0]}>
+                    <LabelList dataKey="count" position="right" fill="#5a3e2b" fontSize={isMobile ? 10 : 12} />
+                    {deviceChartData.map((_, index) => (
+                      <Cell key={`dev-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="chart-empty">Not enough device data to visualize yet.</div>
+            )}
           </div>
         </div>
       </section>
@@ -446,10 +578,10 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
             <h4>By Role</h4>
             <div className="chart-content">
             <ResponsiveContainer width="100%" height={barHeight}>
-                <BarChart data={analytics.learningPreferences.byRole} barSize={28}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                  <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" />
-                  <YAxis tick={axisTick} stroke="#e9ecef" />
+              <BarChart data={analytics.learningPreferences.byRole} barSize={isMobile ? 20 : 28} margin={chartMargin}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" tickFormatter={formatCategory} />
+                <YAxis tick={axisTick} stroke="#e9ecef" />
                   <Tooltip />
                   <Legend wrapperStyle={legendStyle} />
                   <Bar dataKey="Online" fill={CHART_COLORS[0]} radius={[6, 6, 0, 0]} />

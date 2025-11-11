@@ -32,7 +32,7 @@ const LiveData = () => {
 
         try {
           const responses = await getSurveyResponses()
-          const tanzaniaResponses = responses.filter(r => r.country === 'Tanzania')
+          const tanzaniaResponses = responses.filter(r => (r.country || '').toString().trim().toLowerCase() === 'tanzania')
           setSurveyResponses(tanzaniaResponses)
           setSurveyData({
             totalResponses: tanzaniaResponses.length,
@@ -76,7 +76,7 @@ const LiveData = () => {
     setLoading(true)
     try {
       const responses = await getSurveyResponses()
-      const tanzaniaResponses = responses.filter(r => r.country === 'Tanzania')
+      const tanzaniaResponses = responses.filter(r => (r.country || '').toString().trim().toLowerCase() === 'tanzania')
       setSurveyResponses(tanzaniaResponses)
       setSurveyData({
         totalResponses: tanzaniaResponses.length,
