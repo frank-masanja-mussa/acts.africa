@@ -12,7 +12,7 @@ const GOOGLE_SHEETS_CONFIG = {
     STUDENT_DATA: 'Student Data!A1:Z100',
     SCHOOL_DATA: 'School Data!A1:Z100',
     FUNDING_DATA: 'Funding Data!A1:Z100',
-    SURVEY_RESPONSES: 'Survey Responses!A1:Z1000'
+    SURVEY_RESPONSES: 'Survey Responses!A1:N20000'
   }
 }
 

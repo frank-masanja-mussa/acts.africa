@@ -37,14 +37,15 @@ const INTERNET_KEYS = ['Daily', 'Weekly', 'Monthly', 'Rarely', 'Never']
 
 const SurveyAnalytics = ({ surveyData = [] }) => {
   const [filters, setFilters] = useState({ role: 'All', gender: 'All', age: 'All' })
-  const [analytics, setAnalytics] = useState({
+  // Derived analytics; computed once per filtered dataset change
+  const emptyAnalytics = useMemo(() => ({
     demographics: { byAge: [], byGender: [], byRole: [] },
     aiAwareness: { byRole: [], byAge: [], overall: [] },
     internetUsage: { byRole: [], byAge: [], overall: [] },
     barriers: { all: [], byRole: [] },
     devices: { all: [], byRole: [] },
     learningPreferences: { all: [], byRole: [] }
-  })
+  }), [])
 
   const uniqueOptions = useMemo(() => {
     const roles = new Set()
@@ -63,6 +64,17 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
     }
   }, [surveyData])
 
+  // Responsive chart heights
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false)
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  const pieHeight = isMobile ? 260 : 380
+  const barHeight = isMobile ? 320 : 420
+  const deviceBarHeight = isMobile ? 320 : 400
+
   const filteredData = useMemo(() => {
     return surveyData.filter(r => {
       if (filters.role !== 'All' && r.role !== filters.role) return false
@@ -72,22 +84,9 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
     })
   }, [surveyData, filters])
 
-  useEffect(() => {
-    if (filteredData.length > 0) {
-      processAnalytics(filteredData)
-    } else {
-      setAnalytics({
-        demographics: { byAge: [], byGender: [], byRole: [] },
-        aiAwareness: { byRole: [], byAge: [], overall: [] },
-        internetUsage: { byRole: [], byAge: [], overall: [] },
-        barriers: { all: [], byRole: [] },
-        devices: { all: [], byRole: [] },
-        learningPreferences: { all: [], byRole: [] }
-      })
-    }
-  }, [filteredData])
-
-  const processAnalytics = (data) => {
+  const analytics = useMemo(() => {
+    const data = filteredData
+    if (!data || data.length === 0) return emptyAnalytics
     const ageGroups = {}
     const genderGroups = {}
     const roleGroups = {}
@@ -109,7 +108,8 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
     const learningPrefs = {}
     const learningPrefsByRole = {}
 
-    data.forEach(response => {
+    for (let i = 0; i < data.length; i++) {
+      const response = data[i]
       ageGroups[response.age] = (ageGroups[response.age] || 0) + 1
       genderGroups[response.gender] = (genderGroups[response.gender] || 0) + 1
       roleGroups[response.role] = (roleGroups[response.role] || 0) + 1
@@ -146,9 +146,9 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
       learningPrefs[pref] = (learningPrefs[pref] || 0) + 1
       if (!learningPrefsByRole[response.role]) learningPrefsByRole[response.role] = {}
       learningPrefsByRole[response.role][pref] = (learningPrefsByRole[response.role][pref] || 0) + 1
-    })
+    }
 
-    setAnalytics({
+    return {
       demographics: {
         byAge: objectToSeries(ageGroups),
         byGender: objectToSeries(genderGroups),
@@ -176,10 +176,15 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         all: objectToSeries(learningPrefs),
         byRole: groupToStacked(learningPrefsByRole)
       }
-    })
-  }
+    }
+  }, [filteredData, emptyAnalytics])
 
-  const objectToSeries = (obj) => Object.entries(obj).map(([name, value]) => ({ name, value }))
+  const objectToSeries = (obj) => {
+    // Convert map to sorted series to stabilize chart ordering on large datasets
+    return Object.entries(obj)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+  }
   const groupToStacked = (groupObj, labelKey = 'role') => {
     return Object.entries(groupObj).map(([label, series]) => ({ [labelKey]: label, ...series }))
   }
@@ -245,7 +250,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>Participants by Role</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={380}>
                 <PieChart>
                   <Pie data={analytics.demographics.byRole} cx="50%" cy="50%" innerRadius={60} outerRadius={110} stroke="#ffffff" strokeWidth={2} labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} dataKey="value">
                     {analytics.demographics.byRole.map((_, index) => (
@@ -261,7 +266,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>Age Distribution</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={380}>
                 <PieChart>
                   <Pie data={analytics.demographics.byAge} cx="50%" cy="50%" innerRadius={60} outerRadius={110} stroke="#ffffff" strokeWidth={2} labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} dataKey="value">
                     {analytics.demographics.byAge.map((_, index) => (
@@ -277,7 +282,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>Gender Distribution</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+              <ResponsiveContainer width="100%" height={380}>
                 <PieChart>
                   <Pie data={analytics.demographics.byGender} cx="50%" cy="50%" innerRadius={60} outerRadius={110} stroke="#ffffff" strokeWidth={2} labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} dataKey="value">
                     {analytics.demographics.byGender.map((_, index) => (
@@ -298,15 +303,15 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         <div className="chart-container-full">
           <h4>By Role</h4>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={440}>
-              <BarChart data={analytics.aiAwareness.byRole} barSize={28}>
+              <ResponsiveContainer width="100%" height={barHeight}>
+                <BarChart data={analytics.aiAwareness.byRole} barSize={20} barCategoryGap="10%">
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" />
-                <YAxis tick={axisTick} stroke="#e9ecef" />
-                <Tooltip />
-                <Legend wrapperStyle={legendStyle} />
+                <XAxis dataKey="role" tick={axisTick} stroke="#dadce0" />
+                <YAxis tick={axisTick} stroke="#dadce0" />
+                <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #dadce0', borderRadius: '8px' }} />
+                <Legend wrapperStyle={legendStyle} iconType="circle" />
                 {AI_LEVEL_KEYS.map((key, idx) => (
-                  <Bar key={key} dataKey={key} stackId="a" fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[6, 6, 0, 0]} />
+                  <Bar key={key} dataKey={key} fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[4, 4, 0, 0]} />
                 ))}
               </BarChart>
             </ResponsiveContainer>
@@ -316,15 +321,15 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         <div className="chart-container-full">
           <h4>By Age Group</h4>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={440}>
-              <BarChart data={analytics.aiAwareness.byAge} barSize={28}>
+            <ResponsiveContainer width="100%" height={barHeight}>
+              <BarChart data={analytics.aiAwareness.byAge} barSize={20} barCategoryGap="10%">
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis dataKey="age" tick={axisTick} stroke="#e9ecef" />
-                <YAxis tick={axisTick} stroke="#e9ecef" />
-                <Tooltip />
-                <Legend wrapperStyle={legendStyle} />
+                <XAxis dataKey="age" tick={axisTick} stroke="#dadce0" />
+                <YAxis tick={axisTick} stroke="#dadce0" />
+                <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #dadce0', borderRadius: '8px' }} />
+                <Legend wrapperStyle={legendStyle} iconType="circle" />
                 {AI_LEVEL_KEYS.map((key, idx) => (
-                  <Bar key={key} dataKey={key} stackId="a" fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[6, 6, 0, 0]} />
+                  <Bar key={key} dataKey={key} fill={CHART_COLORS[idx % CHART_COLORS.length]} radius={[4, 4, 0, 0]} />
                 ))}
               </BarChart>
             </ResponsiveContainer>
@@ -339,7 +344,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>Overall Usage</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={pieHeight}>
                 <PieChart>
                   <Pie data={analytics.internetUsage.overall} cx="50%" cy="50%" innerRadius={60} outerRadius={110} stroke="#ffffff" strokeWidth={2} labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} dataKey="value">
                     {analytics.internetUsage.overall.map((_, index) => (
@@ -354,7 +359,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>By Role</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={barHeight}>
                 <BarChart data={analytics.internetUsage.byRole} barSize={28}>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
                   <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" />
@@ -377,13 +382,13 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         <div className="chart-container-full">
           <h4>Top Barriers</h4>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={440}>
-              <BarChart data={analytics.barriers.all} layout="vertical" barSize={18}>
+              <ResponsiveContainer width="100%" height={barHeight}>
+                <BarChart data={analytics.barriers.all} layout="vertical" barSize={24} barCategoryGap="12%">
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                <XAxis type="number" tick={axisTick} stroke="#e9ecef" />
-                <YAxis dataKey="name" type="category" width={160} tick={axisTick} stroke="#e9ecef" />
-                <Tooltip />
-                <Bar dataKey="value" fill={COLORS.primary} radius={[0, 6, 6, 0]}>
+                <XAxis type="number" tick={axisTick} stroke="#dadce0" />
+                <YAxis dataKey="name" type="category" width={isMobile ? 120 : 180} tick={axisTick} stroke="#dadce0" />
+                <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #dadce0', borderRadius: '8px' }} />
+                <Bar dataKey="value" radius={[0, 8, 8, 0]}>
                   {analytics.barriers.all.map((_, index) => (
                     <Cell key={`bar-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                   ))}
@@ -400,8 +405,8 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
         <div className="chart-container-full">
           <h4>Device Availability</h4>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={380}>
-              <BarChart data={analytics.devices.all} barSize={28}>
+            <ResponsiveContainer width="100%" height={deviceBarHeight}>
+              <BarChart data={analytics.devices.all} barSize={32}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
                 <XAxis dataKey="name" tick={axisTick} stroke="#e9ecef" />
                 <YAxis tick={axisTick} stroke="#e9ecef" />
@@ -424,7 +429,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>Overall</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={pieHeight}>
                 <PieChart>
                   <Pie data={analytics.learningPreferences.all} cx="50%" cy="50%" innerRadius={60} outerRadius={110} stroke="#ffffff" strokeWidth={2} labelLine={false} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} dataKey="value">
                     {analytics.learningPreferences.all.map((_, index) => (
@@ -440,7 +445,7 @@ const SurveyAnalytics = ({ surveyData = [] }) => {
           <div className="chart-container">
             <h4>By Role</h4>
             <div className="chart-content">
-              <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={barHeight}>
                 <BarChart data={analytics.learningPreferences.byRole} barSize={28}>
                   <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
                   <XAxis dataKey="role" tick={axisTick} stroke="#e9ecef" />

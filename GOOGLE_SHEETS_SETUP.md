@@ -64,18 +64,26 @@ Create the following sheets in your Google Sheets document:
 
 ## Step 6: Configure Environment Variables (Vite)
 
-Copy `env.example` to `.env` in your project root and set:
+Create a `.env` file in the project root (do not commit it) and set:
 
 ```env
-VITE_GOOGLE_SHEETS_API_KEY=your_api_key_here
+VITE_SHEETS_WEBAPP_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+VITE_SHEETS_WRITE_TOKEN=your_shared_secret_token
 VITE_GOOGLE_SHEETS_ID=your_spreadsheet_id_here
 ```
 
 Replace:
-- `your_api_key_here` with the API key from Step 3
-- `your_spreadsheet_id_here` with the spreadsheet ID from Step 4
+- `YOUR_DEPLOYMENT_ID` with the deployment ID generated when you publish the Apps Script web app.
+- `your_shared_secret_token` with the same token you configure inside `FINAL_APPS_SCRIPT.js`.
+- `your_spreadsheet_id_here` with the spreadsheet ID from Step 4 (used for linking out to the sheet and optional direct API fallback).
 
-Note: Vite only exposes variables prefixed with `VITE_` to client code.
+If you still plan to use the direct Google Sheets API as a fallback, you can additionally set:
+
+```env
+VITE_GOOGLE_SHEETS_API_KEY=your_api_key_here
+```
+
+Note: Vite only exposes variables prefixed with `VITE_` to client code. Netlify production variables should match these names exactly.
 
 ## Step 7: Make Your Google Sheets Public (Optional)
 
@@ -91,29 +99,15 @@ If you want to make the data publicly accessible without authentication:
 Use an Apps Script Web App as a proxy for controlled access and schema shaping.
 
 1. In Google Drive, create a new Apps Script project.
-2. Paste a handler like this:
-
-```javascript
-// Apps Script (Code.gs)
-// Deploy as Web App (Anyone with the link) to allow public GET reads
-
-const SPREADSHEET_ID = 'REPLACE_WITH_YOUR_SHEET_ID';
-
-function doGet(e) {
-  const range = (e.parameter.range || 'Impact Metrics!A1:Z100');
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const values = ss.getRange(range).getValues();
-  return ContentService
-    .createTextOutput(JSON.stringify({ values }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-```
-
+2. Paste the production handler from `FINAL_APPS_SCRIPT.js`. It already includes:
+   - Read access via `doGet`
+   - Token-authenticated writes via both GET (for browser compatibility) and POST (for server-side tooling)
+   - Concurrency control with `LockService`
 3. Deploy → New deployment → Type: Web app.
    - Execute as: Me
    - Who has access: Anyone with the link
 4. Copy the Web app URL and set it as `VITE_SHEETS_WEBAPP_URL` in `.env`.
-5. Leave `VITE_GOOGLE_SHEETS_API_KEY` and `VITE_GOOGLE_SHEETS_ID` blank if you prefer Apps Script only.
+5. Update the `WRITE_TOKEN` in the Apps Script file and set the same value as `VITE_SHEETS_WRITE_TOKEN` locally and on Netlify.
 
 ## Step 8: Test the Integration
 
@@ -154,6 +148,28 @@ The live data page automatically refreshes every 5 minutes. To update data manua
 1. Edit your Google Sheets document
 2. The changes will appear on the website within 5 minutes
 3. You can also click the refresh button on the live data page
+
+## Seeding Katavi Survey Responses at Scale
+
+To stress-test analytics or bootstrap visualisations, you can seed Katavi-specific survey data directly into the `Survey Responses` sheet using the provided Node script.
+
+1. Ensure the following environment variables are available (locally via `.env`, in CI/CD via build settings):
+   - `VITE_SHEETS_WEBAPP_URL`
+   - `VITE_SHEETS_WRITE_TOKEN`
+2. Install dependencies if you haven’t already: `npm install`
+3. Run the seeder in dry-run mode to preview payload sizes:
+   ```bash
+   npm run seed:surveys -- 500 --batch=100 --dry-run
+   ```
+4. When ready to append data, drop the `--dry-run` flag:
+   ```bash
+   npm run seed:surveys -- 10000 --batch=250
+   ```
+   - The first numeric argument is the total rows to generate (default: 10,000).
+   - Use `--batch=<size>` to control how many rows each request sends (default: 250).
+   - Data includes realistic distributions for students, teachers, and administrators in Katavi, respecting existing sheet headers.
+5. Verify new rows in Google Sheets (the script appends without overwriting existing data).
+6. If you need to roll back seeded rows, use Google Sheets version history or manually delete the appended range.
 
 ## Support
 
