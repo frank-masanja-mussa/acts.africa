@@ -150,31 +150,3 @@ function testWrite() {
   Logger.log(result.getContent());
 }
 
-/* 7️⃣  SETUP SURVEY RESPONSES SHEET -------------------------- */
-function setupSurveyResponsesSheet() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  
-  // Check if sheet already exists
-  let sheet = ss.getSheetByName('Survey Responses');
-  if (!sheet) {
-    sheet = ss.insertSheet('Survey Responses');
-  }
-  
-  // Set headers
-  const headers = [
-    'timestamp', 'country', 'age', 'gender', 'role',
-    'internetUsage', 'aiExperience', 'devices',
-    'aiUnderstanding', 'barriers', 'topics',
-    'joinClub', 'learningPreference', 'expectations'
-  ];
-  
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  sheet.getRange(1, 1, 1, headers.length)
-    .setFontWeight('bold')
-    .setBackground('#4a5568')
-    .setFontColor('#ffffff');
-  sheet.setFrozenRows(1);
-  sheet.autoResizeColumns(1, headers.length);
-  
-  Logger.log('✅ Survey Responses sheet created/updated successfully');
-}
