@@ -149,28 +149,6 @@ The live data page automatically refreshes every 5 minutes. To update data manua
 2. The changes will appear on the website within 5 minutes
 3. You can also click the refresh button on the live data page
 
-## Seeding Katavi Survey Responses at Scale
-
-To stress-test analytics or bootstrap visualisations, you can seed Katavi-specific survey data directly into the `Survey Responses` sheet using the provided Node script.
-
-1. Ensure the following environment variables are available (locally via `.env`, in CI/CD via build settings):
-   - `VITE_SHEETS_WEBAPP_URL`
-   - `VITE_SHEETS_WRITE_TOKEN`
-2. Install dependencies if you haven’t already: `npm install`
-3. Run the seeder in dry-run mode to preview payload sizes:
-   ```bash
-   npm run seed:surveys -- 500 --batch=100 --dry-run
-   ```
-4. When ready to append data, drop the `--dry-run` flag:
-   ```bash
-   npm run seed:surveys -- 10000 --batch=250
-   ```
-   - The first numeric argument is the total rows to generate (default: 10,000).
-   - Use `--batch=<size>` to control how many rows each request sends (default: 250).
-   - Data includes realistic distributions for students, teachers, and administrators in Katavi, respecting existing sheet headers.
-5. Verify new rows in Google Sheets (the script appends without overwriting existing data).
-6. If you need to roll back seeded rows, use Google Sheets version history or manually delete the appended range.
-
 ## Support
 
 If you encounter any issues:
