@@ -44,3 +44,12 @@ public/
 - Vite
 - CSS3
 - HTML5 Video
+
+## Documentation & Research
+
+This project is part of **ACTS Africa (AI for Technology and Society)**, a program focused on advancing AI literacy, workforce readiness, and community-based learning in low-resource contexts.
+
+Quantitative survey analysis, strategic framing, and supporting documentation for the ACTS Africa program are available here:
+
+- **ACTS Africa Survey Analysis & Strategy Document**  
+  https://docs.google.com/document/d/1Os-wEg9HM4o2-DORCbpO3hMmBNgrZwxGbdAwEhj4LN4
