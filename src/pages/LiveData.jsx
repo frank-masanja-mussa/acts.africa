@@ -131,7 +131,23 @@ const LiveData = () => {
           </div>
           <h1>Survey Analytics Dashboard</h1>
           <p>Real-time insights from Tanzania AI Literacy & Appropriate Technology Needs survey</p>
-          <a href="https://docs.google.com/document/d/1Os-wEg9HM4o2-DORCbpO3hMmBNgrZwxGbdAwEhj4LN4/edit?usp=sharing"> ACTS Africa Survey Documentation </a>
+          <a
+  href="https://docs.google.com/document/d/1Os-wEg9HM4o2-DORCbpO3hMmBNgrZwxGbdAwEhj4LN4/view"
+  target="_blank"
+  rel="noopener noreferrer"
+  style={{
+    display: 'inline-block',
+    marginTop: '1.2rem',
+    marginBottom: '2.5rem',
+    color: '#ffffff',
+    fontSize: '0.95rem',
+    textDecoration: 'underline',
+    opacity: 0.9
+  }}
+>
+  ACTS Africa Survey Documentation
+</a>
+
 
           <div className="stats-overview">
             <div className="stat-card">
