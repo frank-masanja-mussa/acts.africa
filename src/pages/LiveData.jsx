@@ -136,17 +136,25 @@ const LiveData = () => {
   target="_blank"
   rel="noopener noreferrer"
   style={{
-    display: 'inline-block',
-    marginTop: '1.2rem',
-    marginBottom: '2.5rem',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '1.5rem',
+    marginBottom: '3rem',
+    padding: '0.9rem 1.8rem',
+    borderRadius: '999px',
+    border: '2px solid rgba(255,255,255,0.9)',
+    background: 'transparent',
     color: '#ffffff',
-    fontSize: '0.95rem',
-    textDecoration: 'underline',
-    opacity: 0.9
+    fontSize: '1rem',
+    fontWeight: 600,
+    textDecoration: 'none',
+    cursor: 'pointer'
   }}
 >
   ACTS Africa Survey Documentation
 </a>
+
 
 
           <div className="stats-overview">
