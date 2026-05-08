@@ -10,6 +10,8 @@ import Resources from '../features/resources/Resources'
 import LessonPlan from '../features/resources/LessonPlan'
 import TellUs from '../features/feedback/TellUs'
 import LiveData from '../features/analytics/LiveData'
+import Programs from '../features/programs/Programs'
+import ProgramApplication from '../features/programs/ProgramApplication'
 
 function App() {
     return (
@@ -21,6 +23,8 @@ function App() {
                 <Route path="/chapter-application" element={<ChapterApplication />} />
                 <Route path="/tanzania-chapter" element={<TanzaniaChapter />} />
                 <Route path="/tanzania-survey" element={<TanzaniaSurvey />} />
+                <Route path="/programs" element={<Programs />} />
+                <Route path="/programs/apply" element={<ProgramApplication />} />
                 <Route path="/resources" element={<Resources />} />
                 <Route path="/lesson-plan" element={<LessonPlan />} />
                 <Route path="/tell-us" element={<TellUs />} />

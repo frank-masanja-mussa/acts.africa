@@ -163,6 +163,16 @@
   font-size: 0.95rem;
 }
 
+.contact-item-start {
+  align-items: flex-start;
+}
+
+.contact-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .contact-item svg {
   color: #daa520;
   flex-shrink: 0;

@@ -1,124 +1,81 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Logo from './Logo'
+import Logo from '../../shared/components/Logo'
 import './Navbar.css'
 
+const links = [
+    { to: '/programs', label: 'Programs' },
+    { to: '/programs/apply', label: 'Apply' },
+    { to: '/tanzania-chapter', label: 'Katavi Pilot' },
+    { to: '/start-chapter', label: 'Start a Chapter' },
+    { to: '/live-data', label: 'Live Data' }
+]
+
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isChaptersOpen, setIsChaptersOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
 
-  const toggleMenu = () => setIsOpen(!isOpen)
-  const closeMenu = () => setIsOpen(false)
-  const toggleChapters = () => setIsChaptersOpen(!isChaptersOpen)
-  const closeChapters = () => setIsChaptersOpen(false)
+    const toggleMenu = () => setIsOpen((open) => !open)
+    const closeMenu = () => setIsOpen(false)
 
-  // Handle scroll detection for navbar styling
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      setIsScrolled(scrollTop > 50)
-    }
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 24)
+        }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
 
-  // Prevent background scroll when menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('no-scroll')
-      document.body.classList.add('menu-open')
-    } else {
-      document.body.classList.remove('no-scroll')
-      document.body.classList.remove('menu-open')
-    }
-    return () => {
-      document.body.classList.remove('no-scroll')
-      document.body.classList.remove('menu-open')
-    }
-  }, [isOpen])
+    useEffect(() => {
+        document.body.classList.toggle('no-scroll', isOpen)
+        return () => document.body.classList.remove('no-scroll')
+    }, [isOpen])
 
-  return (
-    <header className={`navbar${isScrolled ? ' scrolled' : ''}`}>
-      <div className="navbar-content">
-        <Link to="/" onClick={closeMenu} className="brand-link">
-          <Logo size="medium" showText={true} />
-        </Link>
-
-        <button 
-          className={`nav-toggle${isOpen ? ' open' : ''}`} 
-          aria-label="Toggle navigation"
-          aria-expanded={isOpen}
-          onClick={toggleMenu}
-        >
-          <span className="bar" />
-          <span className="bar" />
-          <span className="bar" />
-        </button>
-
-        <nav className="nav-links">
-          <Link to="/donate" className="nav-link">Donate</Link>
-          
-          {/* Chapters Dropdown */}
-          <div className="dropdown-container">
-            <button 
-              className="nav-link dropdown-trigger"
-              onClick={toggleChapters}
-              onMouseEnter={() => setIsChaptersOpen(true)}
-              onMouseLeave={() => setIsChaptersOpen(false)}
-            >
-              Chapters
-              <span className="dropdown-arrow">▼</span>
-            </button>
-            
-            {isChaptersOpen && (
-              <div 
-                className="dropdown-menu"
-                onMouseEnter={() => setIsChaptersOpen(true)}
-                onMouseLeave={() => setIsChaptersOpen(false)}
-              >
-                <Link to="/tanzania-chapter" className="dropdown-item" onClick={closeChapters}>
-                  Our Chapters
+    return (
+        <header className={`navbar${isScrolled ? ' scrolled' : ''}`}>
+            <div className="navbar-content">
+                <Link to="/" onClick={closeMenu} className="brand-link">
+                    <Logo size="medium" showText={true} />
                 </Link>
-                <Link to="/start-chapter" className="dropdown-item" onClick={closeChapters}>
-                  Start a Chapter
+
+                <nav className="nav-links" aria-label="Primary navigation">
+                    {links.map((link) => (
+                        <Link key={link.to} to={link.to} className="nav-link">
+                            {link.label}
+                        </Link>
+                    ))}
+                    <Link to="/donate" className="nav-link nav-cta">
+                        Donate
+                    </Link>
+                </nav>
+
+                <button
+                    className={`nav-toggle${isOpen ? ' open' : ''}`}
+                    aria-label="Toggle navigation"
+                    aria-expanded={isOpen}
+                    onClick={toggleMenu}
+                >
+                    <span className="bar" />
+                    <span className="bar" />
+                    <span className="bar" />
+                </button>
+            </div>
+
+            {isOpen && <div className="menu-overlay" onClick={closeMenu} />}
+
+            <nav className={`mobile-menu${isOpen ? ' show' : ''}`} aria-label="Mobile navigation">
+                {links.map((link) => (
+                    <Link key={link.to} to={link.to} className="mobile-link" onClick={closeMenu}>
+                        {link.label}
+                    </Link>
+                ))}
+                <Link to="/donate" className="mobile-link mobile-cta" onClick={closeMenu}>
+                    Donate
                 </Link>
-              </div>
-            )}
-          </div>
-          
-          <Link to="/live-data" className="nav-link">Live Data</Link>
-          <Link to="/resources" className="nav-link">Resources</Link>
-          <Link to="/lesson-plan" className="nav-link">Lesson Plan</Link>
-          <Link to="/tell-us" className="nav-link">Tell Us</Link>
-        </nav>
-      </div>
-
-      {/* Glass overlay that blurs the entire background when menu is open */}
-      {isOpen && <div className="menu-overlay" onClick={closeMenu} />}
-
-      <nav className={`mobile-menu${isOpen ? ' show' : ''}`}>
-        <Link to="/donate" className="mobile-link" onClick={closeMenu}>Donate</Link>
-        
-        {/* Mobile Chapters Section */}
-        <div className="mobile-chapters">
-          <div className="mobile-chapters-header">Chapters</div>
-          <Link to="/tanzania-chapter" className="mobile-link mobile-sub-link" onClick={closeMenu}>
-            Our Chapters
-          </Link>
-          <Link to="/start-chapter" className="mobile-link mobile-sub-link" onClick={closeMenu}>
-            Start a Chapter
-          </Link>
-        </div>
-        
-        <Link to="/live-data" className="mobile-link" onClick={closeMenu}>Live Data</Link>
-        <Link to="/resources" className="mobile-link" onClick={closeMenu}>Resources</Link>
-        <Link to="/lesson-plan" className="mobile-link" onClick={closeMenu}>Lesson Plan</Link>
-        <Link to="/tell-us" className="mobile-link" onClick={closeMenu}>Tell Us</Link>
-      </nav>
-    </header>
-  )
+            </nav>
+        </header>
+    )
 }
 
 export default Navbar

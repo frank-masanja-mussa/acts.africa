@@ -20,6 +20,8 @@ import {
 } from '@mdi/js'
 import './LessonPlan.css'
 
+const supportMailto = 'mailto:frank@koola.app,voiceofcalling@gmail.com,wonup2@gmail.com,africa@daven.ai?subject=ACTS%20Lesson%20Plan%20Support'
+
 const LessonPlan = () => {
 
     const aiApps = [
@@ -212,9 +214,9 @@ const LessonPlan = () => {
             <div className="lesson-plan-content" id="lesson-plan-content">
                 <div className="lesson-plan-hero">
                     <div className="hero-content">
-                        <h1 className="lesson-plan-title">AI Education Lesson Plan</h1>
+                        <h1 className="lesson-plan-title">Teach ACTS in one working plan.</h1>
                         <p className="lesson-plan-subtitle">
-                            Comprehensive curriculum for teaching AI awareness, benefits, and responsible use
+                            A practical curriculum for AI awareness, useful tools, and responsible adoption.
                         </p>
                         <div className="hero-stats">
                             <div className="stat">
@@ -507,8 +509,8 @@ const LessonPlan = () => {
                         resources, and ongoing assistance.
                     </p>
                     <div className="contact-actions">
-                        <button className="primary-button">Contact Support</button>
-                        <button className="secondary-button">Request Training</button>
+                        <a href={supportMailto} className="primary-button">Contact Support</a>
+                        <a href={supportMailto} className="secondary-button">Request Training</a>
                     </div>
                 </div>
             </div>

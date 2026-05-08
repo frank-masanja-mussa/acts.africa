@@ -46,36 +46,36 @@ const LiveData = () => {
 
             <main>
                 <section className="analytics-hero">
-                    <div className="hero-content">
-                        <div className="hero-icon">
+                    <div className="live-data-hero-content">
+                        <div className="live-data-hero-icon">
                             <Icon path={mdiChartTimelineVariant} size={4} />
                         </div>
-                        <h1>Live Insights</h1>
-                        <p>Real-time analysis of our AI Literacy & Appropriate Technology Needs survey. Your responses help us shape the future of African tech education.</p>
+                        <h1>Watch the signal.</h1>
+                        <p>This is how ACTS listens before it scales. We read field responses, patterns, barriers, and demand in real time.</p>
 
-                        <div className="stats-overview">
-                            <div className="stat-card">
-                                <div className="stat-value">{data.length}</div>
-                                <div className="stat-label">Total Responses</div>
+                        <div className="live-data-stats-overview">
+                            <div className="live-data-stat-card">
+                                <div className="live-data-stat-value">{data.length}</div>
+                                <div className="live-data-stat-label">Responses</div>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-value">Tanzania</div>
-                                <div className="stat-label">Current Region</div>
+                            <div className="live-data-stat-card">
+                                <div className="live-data-stat-value">Tanzania</div>
+                                <div className="live-data-stat-label">Current focus</div>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-value">Live</div>
-                                <div className="stat-label">Data Status</div>
+                            <div className="live-data-stat-card">
+                                <div className="live-data-stat-value">{isConfigured ? 'Live' : 'Setup'}</div>
+                                <div className="live-data-stat-label">Signal</div>
                             </div>
                         </div>
 
-                        <div className="refresh-section">
+                        <div className="live-data-refresh-section">
                             <button
-                                className="refresh-btn"
+                                className="live-data-refresh-btn"
                                 onClick={fetchData}
                                 disabled={loading}
                             >
                                 <Icon path={mdiRefresh} size={1} />
-                                {loading ? 'Refreshing...' : 'Refresh Data'}
+                                {loading ? 'Refreshing...' : 'Refresh Signal'}
                             </button>
                         </div>
                     </div>
@@ -85,20 +85,20 @@ const LiveData = () => {
                     {loading ? (
                         <div className="loading-container">
                             <div className="loading-spinner"></div>
-                            <p>Fetching real-time data from Google Sheets...</p>
+                            <p>Pulling the latest field data from Google Sheets...</p>
                         </div>
                     ) : error ? (
                         <div className="error-container">
                             <Icon path={mdiAlertCircle} size={3} />
-                            <h2>Oops! Something went wrong</h2>
+                            <h2>The live signal is unavailable.</h2>
                             <p>{error}</p>
                             <button className="primary-btn" onClick={fetchData}>Try Again</button>
                         </div>
                     ) : !isConfigured ? (
                         <div className="error-container">
                             <Icon path={mdiDatabase} size={3} />
-                            <h2>Connectivity Required</h2>
-                            <p>Live data dashboard requires Google Sheets API configuration. If you're a developer, please check your environment variables.</p>
+                            <h2>Connect the data source.</h2>
+                            <p>This dashboard needs Google Sheets configuration before it can show the Tanzania survey signal.</p>
                             <div className="setup-guide">
                                 <h3>Required Environment Variables:</h3>
                                 <code>VITE_GOOGLE_SHEETS_ID</code><br />

@@ -64,25 +64,24 @@ const Donate = () => {
 
             <div className="donate-content">
                 <div className="donate-hero">
-                    <h1 className="donate-title">Support Our Mission</h1>
-                    <p className="donate-subtitle">Help us educate 2.5B people about AI by 2050</p>
+                    <h1 className="donate-title">Back what works.</h1>
+                    <p className="donate-subtitle">Help ACTS turn proof in Tanzania into wider scale across Africa.</p>
                 </div>
 
                 <div className="donate-main">
                     <div className="donate-card primary">
                         <div className="card-header">
-                            <h2>Make a Difference</h2>
+                            <h2>Fund practical AI access</h2>
                             <div className="card-icon">
                                 <Icon path={mdiHeart} size={1.5} />
                             </div>
                         </div>
                         <p className="card-description">
-                            Your support accelerates AI education and empowerment across African chapters.
-                            Every contribution helps us reach more students, train more teachers, and build
-                            a future where everyone is prepared for the AI revolution.
+                            Your support funds local delivery, teacher preparation, field learning, and the next chapter of expansion.
+                            We want AI understanding to reach working-class Africans first, not last.
                         </p>
                         <div className="highlight-banner">
-                            <span className="highlight-text">Join thousands supporting AI education in Africa</span>
+                            <span className="highlight-text">Proof first. Scale second. People always.</span>
                         </div>
                     </div>
 
@@ -91,22 +90,22 @@ const Donate = () => {
                             <div className="stat-icon">
                                 <Icon path={mdiAccountGroup} size={1.2} />
                             </div>
-                            <div className="stat-number">10K+</div>
-                            <div className="stat-label">Students Reached</div>
+                            <div className="stat-number">7,530</div>
+                            <div className="stat-label">Participants engaged</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-icon">
                                 <Icon path={mdiHandHeart} size={1.2} />
                             </div>
-                            <div className="stat-number">42</div>
-                            <div className="stat-label">Schools Active</div>
+                            <div className="stat-number">40</div>
+                            <div className="stat-label">Schools reached</div>
                         </div>
                         <div className="stat-card">
                             <div className="stat-icon">
                                 <Icon path={mdiGift} size={1.2} />
                             </div>
-                            <div className="stat-number">100%</div>
-                            <div className="stat-label">Impact Focused</div>
+                            <div className="stat-number">Next</div>
+                            <div className="stat-label">Katavi expansion and new local chapters</div>
                         </div>
                     </div>
 

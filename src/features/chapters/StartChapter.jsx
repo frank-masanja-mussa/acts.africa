@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
 import AfricaMap from '../maps/AfricaMap'
 import Icon from '@mdi/react'
-import { mdiRocket, mdiMapMarker, mdiAccountGroup, mdiTarget } from '@mdi/js'
-import '../../pages/pages.css'
+import { mdiRocket } from '@mdi/js'
+import '../../shared/styles/pages.css'
 
 const StartChapter = () => {
     const audioRef = useRef(null)
@@ -43,24 +44,24 @@ const StartChapter = () => {
             {/* Content Overlay */}
             <div className="chapter-content">
                 <div className="chapter-hero">
-                    <h1 className="chapter-title">Start a Local Chapter</h1>
-                    <p className="chapter-subtitle">Launch AI education in your community</p>
+                    <h1 className="chapter-title">Start ACTS where you are.</h1>
+                    <p className="chapter-subtitle">Open a local node for practical AI learning in your school, city, workplace, or community.</p>
                 </div>
 
                 <div className="chapter-main">
                     <div className="chapter-card primary">
                         <div className="card-header">
-                            <h2>Join the Movement</h2>
+                            <h2>Open a local chapter</h2>
                             <div className="card-icon">
                                 <Icon path={mdiRocket} size={1.5} />
                             </div>
                         </div>
                         <p className="card-description">
-                            Launch a chapter in your city and grow a local AI community. Connect with students,
-                            educators, and professionals to build AI literacy from the ground up.
+                            We help local organizers start with a real need, a real audience, and a practical way to deliver.
+                            ACTS does not need a perfect setup to begin.
                         </p>
                         <div className="highlight-banner">
-                            <span className="highlight-text">We're starting in Tanzania and expanding across Africa</span>
+                            <span className="highlight-text">Proof in Tanzania. Chapters across Africa next.</span>
                         </div>
                     </div>
 
@@ -70,22 +71,22 @@ const StartChapter = () => {
                             <div className="stat-label">People to reach by 2050</div>
                         </div>
                         <div className="stat-card">
-                            <div className="stat-number">20+</div>
-                            <div className="stat-label">Countries planned</div>
+                            <div className="stat-number">1</div>
+                            <div className="stat-label">Pilot model already running</div>
                         </div>
                         <div className="stat-card">
-                            <div className="stat-number">1</div>
-                            <div className="stat-label">Active chapter</div>
+                            <div className="stat-number">Next</div>
+                            <div className="stat-label">Your city, campus, school, or worker community</div>
                         </div>
                     </div>
 
                     <div className="chapter-actions">
-                        <a href="/chapter-application" className="primary-button" aria-label="Start a new ACTS Africa chapter in your area">
+                        <Link to="/chapter-application" className="primary-button" aria-label="Start a new ACTS Africa chapter in your area">
                             Start Your Chapter
-                        </a>
-                        <button className="secondary-button" aria-label="Learn more about starting a chapter">
-                            Learn More
-                        </button>
+                        </Link>
+                        <Link to="/programs" className="secondary-button" aria-label="See open ACTS programs">
+                            See open programs
+                        </Link>
                     </div>
                 </div>
             </div>

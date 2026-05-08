@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
-import '../../pages/pages.css'
+import '../../shared/styles/pages.css'
 
 const ChapterApplication = () => {
     const [formData, setFormData] = useState({
@@ -207,8 +207,8 @@ const ChapterApplication = () => {
 
             <div className="chapter-content">
                 <div className="chapter-hero">
-                    <h1 className="chapter-title">Start a Chapter Application</h1>
-                    <p className="chapter-subtitle">For organizations, institutions, and companies looking to establish AI education chapters</p>
+                    <h1 className="chapter-title">Apply to open a local ACTS node.</h1>
+                    <p className="chapter-subtitle">For schools, communities, institutions, and partners ready to host practical AI learning.</p>
                 </div>
 
                 <div className="form-container">
