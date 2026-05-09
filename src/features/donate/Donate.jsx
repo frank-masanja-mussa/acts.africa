@@ -9,11 +9,7 @@ const Donate = () => {
     const audioRef = useRef(null)
     const [showQR, setShowQR] = useState(false)
 
-    const gofundmeUrl = 'https://gofund.me/e9f5257e9'
-
-    const handleDonateClick = () => {
-        window.open(gofundmeUrl, '_blank', 'noopener,noreferrer')
-    }
+    const gofundmeUrl = 'https://www.gofundme.com/f/VoiceofCalling'
 
     const handleShareClick = async () => {
         if (navigator.share) {
@@ -110,10 +106,16 @@ const Donate = () => {
                     </div>
 
                     <div className="donate-actions">
-                        <button className="primary-button" onClick={handleDonateClick} aria-label="Donate to support ACTS Africa mission">
+                        <a
+                            href={gofundmeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="primary-button"
+                            aria-label="Donate to support ACTS Africa mission"
+                        >
                             <Icon path={mdiOpenInNew} size={1} />
                             Donate on GoFundMe
-                        </button>
+                        </a>
                         <button className="secondary-button" onClick={() => setShowQR(!showQR)} aria-label="Show QR code for easy donation">
                             <Icon path={mdiQrcode} size={1} />
                             {showQR ? 'Hide QR Code' : 'Show QR Code'}

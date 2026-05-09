@@ -352,6 +352,73 @@
     display: none;
 }
 
+.chapter-audio-notice {
+    position: fixed;
+    top: 104px;
+    right: 20px;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    width: min(420px, calc(100vw - 32px));
+    padding: 14px 16px;
+    border-radius: 22px;
+    border: 1px solid var(--glass-stroke-strong);
+    background: var(--glass-panel-strong);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.chapter-audio-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    background: var(--glass-chip);
+    color: var(--accent);
+}
+
+.chapter-audio-copy {
+    display: grid;
+    gap: 4px;
+}
+
+.chapter-audio-copy strong {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.chapter-audio-copy span {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.4;
+}
+
+.chapter-audio-button,
+.chapter-audio-dismiss {
+    border: 1px solid var(--glass-stroke);
+    border-radius: 999px;
+    background: var(--glass-panel-soft);
+    color: var(--text-primary);
+    min-height: 38px;
+    padding: 0 14px;
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.chapter-audio-button:hover,
+.chapter-audio-dismiss:hover {
+    transform: translateY(-1px);
+    border-color: var(--glass-stroke-strong);
+}
+
 .form-container {
     padding: 0;
     overflow: hidden;
@@ -562,5 +629,18 @@ textarea.form-input {
 
     .card-header {
         flex-direction: column;
+    }
+
+    .chapter-audio-notice {
+        top: 84px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        grid-template-columns: auto 1fr;
+    }
+
+    .chapter-audio-button,
+    .chapter-audio-dismiss {
+        min-height: 36px;
     }
 }

@@ -14,14 +14,108 @@
     box-sizing: border-box;
 }
 
+.tanzania-map-container::before,
+.tanzania-map-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.tanzania-map-container::before {
+    background:
+        radial-gradient(circle at 18% 16%, rgba(255, 209, 142, 0.14), transparent 20%),
+        radial-gradient(circle at 82% 18%, rgba(236, 161, 82, 0.12), transparent 18%),
+        linear-gradient(180deg, rgba(12, 8, 8, 0.2) 0%, rgba(12, 8, 8, 0.38) 100%);
+    z-index: 0;
+}
+
+.tanzania-map-container::after {
+    background:
+        radial-gradient(circle at 50% 52%, rgba(255, 246, 228, 0.04), transparent 28%),
+        linear-gradient(180deg, rgba(7, 4, 4, 0.18) 0%, rgba(7, 4, 4, 0.48) 100%);
+    z-index: 2;
+}
+
+.tanzania-map-depth {
+    position: absolute;
+    inset: -6%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.map-depth-layer {
+    position: absolute;
+    overflow: hidden;
+    border-radius: 34px;
+    border: 1px solid rgba(255, 236, 212, 0.08);
+    background: linear-gradient(180deg, rgba(255, 248, 238, 0.06), rgba(255, 248, 238, 0.01));
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    opacity: 0.18;
+}
+
+.map-depth-layer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(10, 6, 6, 0.1) 0%, rgba(10, 6, 6, 0.36) 100%),
+        radial-gradient(circle at 24% 18%, rgba(255, 207, 141, 0.18), transparent 28%);
+}
+
+.map-depth-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.72) brightness(0.62) contrast(0.94) blur(0.4px);
+    transform: scale(1.06);
+}
+
+.map-depth-layer.layer-west {
+    top: 12%;
+    left: -1%;
+    width: 28vw;
+    height: 44vh;
+    transform: rotate(-7deg);
+}
+
+.map-depth-layer.layer-south {
+    bottom: 6%;
+    left: 18%;
+    width: 36vw;
+    height: 28vh;
+    transform: rotate(-3deg);
+}
+
+.map-depth-layer.layer-east {
+    top: 18%;
+    right: 4%;
+    width: 22vw;
+    height: 40vh;
+    transform: rotate(8deg);
+}
+
+.map-depth-layer.layer-center {
+    bottom: 12%;
+    right: 14%;
+    width: 24vw;
+    height: 32vh;
+    transform: rotate(4deg);
+}
+
 .tanzania-svg {
-    width: 120vw;
-    height: 120vh;
-    min-width: 120vw;
-    min-height: 120vh;
+    position: relative;
+    z-index: 1;
+    width: 126vw;
+    height: 126vh;
+    min-width: 126vw;
+    min-height: 126vh;
     object-fit: cover;
     object-position: center;
-    transform: scale(1.1);
+    transform: scale(1.18) translate3d(1.5vw, -1vh, 0);
+    opacity: 0.96;
 }
 
 .reach-marker {
@@ -128,6 +222,42 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+    .map-depth-layer.layer-west {
+        top: 8%;
+        left: -10%;
+        width: 44vw;
+        height: 28vh;
+    }
+
+    .map-depth-layer.layer-south {
+        left: 8%;
+        bottom: 8%;
+        width: 58vw;
+        height: 20vh;
+    }
+
+    .map-depth-layer.layer-east {
+        top: 22%;
+        right: -8%;
+        width: 34vw;
+        height: 28vh;
+    }
+
+    .map-depth-layer.layer-center {
+        right: 4%;
+        bottom: 18%;
+        width: 38vw;
+        height: 24vh;
+    }
+
+    .tanzania-svg {
+        width: 134vw;
+        height: 134vh;
+        min-width: 134vw;
+        min-height: 134vh;
+        transform: scale(1.1) translate3d(3vw, -1vh, 0);
+    }
+
     .reach-marker {
         r: 8;
     }
@@ -157,6 +287,51 @@
 }
 
 @media (max-width: 480px) {
+    .tanzania-map-depth {
+        inset: -14%;
+    }
+
+    .map-depth-layer {
+        opacity: 0.14;
+        border-radius: 24px;
+    }
+
+    .map-depth-layer.layer-west {
+        top: 12%;
+        left: -18%;
+        width: 56vw;
+        height: 24vh;
+    }
+
+    .map-depth-layer.layer-south {
+        bottom: 14%;
+        left: 4%;
+        width: 72vw;
+        height: 18vh;
+    }
+
+    .map-depth-layer.layer-east {
+        top: 28%;
+        right: -14%;
+        width: 42vw;
+        height: 22vh;
+    }
+
+    .map-depth-layer.layer-center {
+        right: -4%;
+        bottom: 28%;
+        width: 44vw;
+        height: 18vh;
+    }
+
+    .tanzania-svg {
+        width: 144vw;
+        height: 144vh;
+        min-width: 144vw;
+        min-height: 144vh;
+        transform: scale(1.04) translate3d(6vw, -1vh, 0);
+    }
+
     .reach-marker {
         r: 6;
     }

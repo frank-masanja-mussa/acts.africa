@@ -5,6 +5,12 @@ import './TanzaniaMap.css'
 const TanzaniaMap = () => {
     const [hoveredRegion, setHoveredRegion] = useState(null)
     const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 })
+    const campaignLayers = [
+        { className: 'layer-west', src: '/campaign/img-2055-web.png' },
+        { className: 'layer-south', src: '/campaign/campaign-group.jpeg' },
+        { className: 'layer-east', src: '/campaign/img-3542-web.png' },
+        { className: 'layer-center', src: '/campaign/campaign-portrait.jpeg' },
+    ]
 
     // Tanzania regions with coordinates
     const regions = [
@@ -38,6 +44,14 @@ const TanzaniaMap = () => {
 
     return (
         <div className="tanzania-map-container">
+            <div className="tanzania-map-depth" aria-hidden="true">
+                {campaignLayers.map((layer) => (
+                    <div key={layer.className} className={`map-depth-layer ${layer.className}`}>
+                        <img src={layer.src} alt="" className="map-depth-image" loading="lazy" />
+                    </div>
+                ))}
+            </div>
+
             <ComposableMap
                 projection="geoMercator"
                 projectionConfig={{

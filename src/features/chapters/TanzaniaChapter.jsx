@@ -1,34 +1,121 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
 import TanzaniaMap from '../maps/TanzaniaMap'
 import Icon from '@mdi/react'
-import { mdiSchool, mdiAccountGroup, mdiMapMarker, mdiTarget, mdiRocket, mdiClipboardText, mdiChartLine } from '@mdi/js'
+import { mdiSchool, mdiAccountGroup, mdiMapMarker, mdiTarget, mdiRocket, mdiClipboardText, mdiChartLine, mdiVolumeHigh, mdiVolumeMute } from '@mdi/js'
 import '../../shared/styles/pages.css'
 
 const TanzaniaChapter = () => {
     const audioRef = useRef(null)
+    const fadeFrameRef = useRef(null)
+    const playTimeoutRef = useRef(null)
+    const hideNoticeTimeoutRef = useRef(null)
+    const playAudioRef = useRef(() => { })
+    const hasStartedRef = useRef(false)
+    const hasHandledMuteEffectRef = useRef(false)
+    const isMutedRef = useRef(false)
+    const [isMuted, setIsMuted] = useState(false)
+    const [showAudioNotice, setShowAudioNotice] = useState(true)
 
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = 0.35
-            const startAtSeconds = 204 // 3:24
-            const attemptPlay = () => {
-                try {
-                    audioRef.current.currentTime = startAtSeconds
-                    audioRef.current.play().catch(() => { })
-                } catch { /* audio unavailable */ }
+        const audio = audioRef.current
+
+        if (!audio) {
+            return undefined
+        }
+
+        const startAtSeconds = 204 // 3:24
+        const targetVolume = 0.18
+
+        const fadeInAudio = () => {
+            if (!audio || hasStartedRef.current || isMutedRef.current) {
+                return
             }
-            attemptPlay()
-            const onFirstInteract = () => {
-                attemptPlay()
-                window.removeEventListener('click', onFirstInteract)
+
+            try {
+                audio.currentTime = startAtSeconds
+                audio.volume = 0
+            } catch {
+                return
             }
-            window.addEventListener('click', onFirstInteract)
-            return () => window.removeEventListener('click', onFirstInteract)
+
+            audio.play()
+                .then(() => {
+                    hasStartedRef.current = true
+
+                    const fadeDuration = 3200
+                    const fadeStart = performance.now()
+
+                    const step = (now) => {
+                        const progress = Math.min((now - fadeStart) / fadeDuration, 1)
+                        audio.volume = targetVolume * progress
+
+                        if (progress < 1 && !isMutedRef.current) {
+                            fadeFrameRef.current = window.requestAnimationFrame(step)
+                        }
+                    }
+
+                    fadeFrameRef.current = window.requestAnimationFrame(step)
+                    hideNoticeTimeoutRef.current = window.setTimeout(() => {
+                        setShowAudioNotice(false)
+                    }, 7000)
+                })
+                .catch(() => { })
+        }
+
+        playAudioRef.current = fadeInAudio
+        playTimeoutRef.current = window.setTimeout(fadeInAudio, 4000)
+
+        const onFirstInteract = () => {
+            fadeInAudio()
+            window.removeEventListener('click', onFirstInteract)
+            window.removeEventListener('touchstart', onFirstInteract)
+        }
+
+        window.addEventListener('click', onFirstInteract)
+        window.addEventListener('touchstart', onFirstInteract)
+
+        return () => {
+            window.removeEventListener('click', onFirstInteract)
+            window.removeEventListener('touchstart', onFirstInteract)
+            window.clearTimeout(playTimeoutRef.current)
+            window.clearTimeout(hideNoticeTimeoutRef.current)
+            window.cancelAnimationFrame(fadeFrameRef.current)
         }
     }, [])
+
+    useEffect(() => {
+        const audio = audioRef.current
+
+        isMutedRef.current = isMuted
+
+        if (!audio) {
+            return
+        }
+
+        if (!hasHandledMuteEffectRef.current) {
+            hasHandledMuteEffectRef.current = true
+            return
+        }
+
+        if (isMuted) {
+            window.clearTimeout(playTimeoutRef.current)
+            window.cancelAnimationFrame(fadeFrameRef.current)
+            audio.pause()
+            audio.volume = 0
+        } else if (hasStartedRef.current) {
+            audio.play().catch(() => { })
+            audio.volume = 0.18
+        } else {
+            playAudioRef.current()
+        }
+    }, [isMuted])
+
+    const handleMuteToggle = () => {
+        setIsMuted((current) => !current)
+    }
 
     return (
         <div className="chapter-page">
@@ -40,6 +127,33 @@ const TanzaniaChapter = () => {
 
             {/* Tanzania Map Background */}
             <TanzaniaMap />
+
+            {showAudioNotice && (
+                <div className="chapter-audio-notice" role="status" aria-live="polite">
+                    <div className="chapter-audio-icon">
+                        <Icon path={isMuted ? mdiVolumeMute : mdiVolumeHigh} size={1} />
+                    </div>
+                    <div className="chapter-audio-copy">
+                        <strong>Music starts softly after 4 seconds.</strong>
+                        <span>Lower your volume now if you are not comfortable.</span>
+                    </div>
+                    <button
+                        type="button"
+                        className="chapter-audio-button"
+                        onClick={handleMuteToggle}
+                    >
+                        {isMuted ? 'Unmute' : 'Mute'}
+                    </button>
+                    <button
+                        type="button"
+                        className="chapter-audio-dismiss"
+                        onClick={() => setShowAudioNotice(false)}
+                        aria-label="Dismiss music notice"
+                    >
+                        Hide
+                    </button>
+                </div>
+            )}
 
             {/* Content Overlay */}
             <div className="chapter-content">
