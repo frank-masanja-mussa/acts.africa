@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
@@ -18,7 +18,7 @@ const TanzaniaChapter = () => {
                 try {
                     audioRef.current.currentTime = startAtSeconds
                     audioRef.current.play().catch(() => { })
-                } catch { }
+                } catch { /* audio unavailable */ }
             }
             attemptPlay()
             const onFirstInteract = () => {

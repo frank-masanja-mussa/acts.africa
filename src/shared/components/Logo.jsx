@@ -1,4 +1,4 @@
-import React from 'react'
+
 import './Logo.css'
 
 const Logo = ({ size = 'medium', showText = true, className = '' }) => {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
 import './Programs.css'

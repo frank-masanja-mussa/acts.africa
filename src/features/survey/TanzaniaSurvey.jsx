@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from '@mdi/react'
 import {
-    mdiAccountGroup,
-    mdiSchool,
-    mdiChartLine,
     mdiCheckCircle,
     mdiArrowLeft,
     mdiSend

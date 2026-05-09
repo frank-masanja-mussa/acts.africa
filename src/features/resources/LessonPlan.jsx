@@ -1,4 +1,3 @@
-import React from 'react'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
 import Icon from '@mdi/react'
@@ -477,9 +476,9 @@ const LessonPlan = () => {
                         <div className="resource-item">
                             <h3>Recommended Reading</h3>
                             <ul>
-                                <li>"Artificial Intelligence: A Guide for Thinking Humans" by Melanie Mitchell</li>
-                                <li>"AI 2041: Ten Visions for Our Future" by Kai-Fu Lee</li>
-                                <li>"The Alignment Problem" by Brian Christian</li>
+                                <li>&quot;Artificial Intelligence: A Guide for Thinking Humans&quot; by Melanie Mitchell</li>
+                                <li>&quot;AI 2041: Ten Visions for Our Future&quot; by Kai-Fu Lee</li>
+                                <li>&quot;The Alignment Problem&quot; by Brian Christian</li>
                             </ul>
                         </div>
                         <div className="resource-item">

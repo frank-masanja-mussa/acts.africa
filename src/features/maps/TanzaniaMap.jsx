@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps'
 import './TanzaniaMap.css'
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,15 +9,9 @@ import {
     Legend,
     ArcElement,
 } from 'chart.js'
-import { Bar, Doughnut } from 'react-chartjs-2'
 import Icon from '@mdi/react'
 import {
-    mdiChartBar,
-    mdiChartPie,
     mdiAccountGroup,
-    mdiSchool,
-    mdiWifi,
-    mdiBrain,
     mdiTrendingUp
 } from '@mdi/js'
 import './CountriesAnalytics.css'
@@ -71,41 +65,6 @@ const CountriesAnalytics = () => {
         fetchSurveyData()
     }, [])
 
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    color: '#f5f5dc',
-                    usePointStyle: true,
-                    font: { size: 14, weight: '600' }
-                }
-            },
-            tooltip: {
-                mode: 'index',
-                intersect: false,
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                titleColor: '#f5f5dc',
-                bodyColor: '#e5e7eb',
-                borderColor: '#d2691e',
-                borderWidth: 1
-            },
-        },
-        interaction: { mode: 'index', intersect: false },
-        scales: {
-            x: {
-                ticks: { color: '#f5f5dc', font: { size: 12 } },
-                grid: { color: 'rgba(255,255,255,0.08)' }
-            },
-            y: {
-                ticks: { color: '#f5f5dc', font: { size: 12 } },
-                grid: { color: 'rgba(255,255,255,0.08)' }
-            },
-        },
-    }
-
     if (loading) {
         return (
             <div className="countries-analytics loading">
@@ -136,8 +95,8 @@ const CountriesAnalytics = () => {
                 <div className="status-content">
                     <Icon path={mdiAccountGroup} size={2} />
                     <h3>Survey Data Integration Pending</h3>
-                    <p>We're currently setting up Google Sheets integration to display real survey responses from our Tanzania AI Literacy & Appropriate Technology Needs survey.</p>
-                    <p>Once configured, you'll see live data including:</p>
+                    <p>We&apos;re currently setting up Google Sheets integration to display real survey responses from our Tanzania AI Literacy & Appropriate Technology Needs survey.</p>
+                    <p>Once configured, you&apos;ll see live data including:</p>
                     <ul>
                         <li>Total survey responses from Tanzania</li>
                         <li>AI understanding levels across age groups</li>

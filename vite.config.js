@@ -12,7 +12,7 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/wb/, ''),
         secure: true,
-        configure: (proxy, options) => {
+        configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, res) => {
             // Add CORS headers for acts.africa domain
             res.setHeader('Access-Control-Allow-Origin', 'https://acts.africa, https://www.acts.africa');

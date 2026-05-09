@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
 import Icon from '@mdi/react'
@@ -41,7 +41,7 @@ const Donate = () => {
                 try {
                     audioRef.current.currentTime = startAtSeconds
                     audioRef.current.play().catch(() => { })
-                } catch { }
+                } catch { /* audio unavailable */ }
             }
             // Try immediately and again on user interaction if needed
             attemptPlay()

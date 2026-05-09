@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Navbar from '../../core/components/Navbar'
 import Footer from '../../core/components/Footer'
 import '../../shared/styles/pages.css'
@@ -96,7 +96,7 @@ const ChapterApplication = () => {
         }
 
         // Phone validation
-        if (formData.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
+        if (formData.phone && !/^[+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\s/g, ''))) {
             newErrors.phone = 'Please enter a valid phone number'
         }
 
@@ -328,7 +328,7 @@ const ChapterApplication = () => {
                         {submitStatus === 'success' && (
                             <div className="form-success">
                                 <h3>Application Submitted Successfully!</h3>
-                                <p>Thank you for your entity's interest in starting a chapter. We'll review your application and get back to you within 5-7 business days.</p>
+                                <p>Thank you for your entity&apos;s interest in starting a chapter. We&apos;ll review your application and get back to you within 5-7 business days.</p>
                             </div>
                         )}
 
