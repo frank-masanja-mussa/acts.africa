@@ -70,7 +70,9 @@ export const parseSheetsData = (rawData) => {
   }
   
   const [headers, ...rows] = rawData.values
-  return rows.map(row => {
+  return rows
+    .filter(row => row.some(cell => String(cell || '').trim() !== ''))
+    .map(row => {
     const obj = {}
     headers.forEach((header, index) => {
       obj[header] = row[index] || ''
