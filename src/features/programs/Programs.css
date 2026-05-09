@@ -1,9 +1,7 @@
 .programs-page {
     min-height: 100vh;
-    background:
-        radial-gradient(circle at top right, rgba(194, 115, 46, 0.18), transparent 24%),
-        linear-gradient(180deg, #150f10 0%, #241917 42%, #2d201d 100%);
-    color: #f9f4ee;
+    background: transparent;
+    color: var(--text-primary);
 }
 
 .programs-content {
@@ -14,10 +12,12 @@
 
 .programs-hero {
     padding: 36px;
-    border: 1px solid rgba(240, 195, 135, 0.1);
+    border: 1px solid var(--glass-stroke);
     border-radius: 32px;
-    background: linear-gradient(180deg, rgba(45, 31, 28, 0.96), rgba(31, 22, 20, 0.98));
-    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.24);
+    background: var(--glass-panel-strong);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .programs-hero-compact {
@@ -28,9 +28,9 @@
 .programs-section-label {
     display: inline-flex;
     padding: 8px 14px;
-    border: 1px solid rgba(240, 195, 135, 0.24);
+    border: 1px solid var(--glass-stroke-strong);
     border-radius: 999px;
-    color: #f0c387;
+    color: var(--accent);
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -41,7 +41,7 @@
 .programs-section-head h2,
 .program-apply-note h2 {
     margin: 18px 0 14px;
-    color: #fff8f0;
+    color: var(--text-primary);
     font-size: clamp(2.2rem, 4vw, 4rem);
     line-height: 1.02;
     letter-spacing: -0.04em;
@@ -52,7 +52,7 @@
 .programs-card p,
 .programs-step p,
 .program-success {
-    color: rgba(249, 244, 238, 0.78);
+    color: var(--text-secondary);
     line-height: 1.7;
 }
 
@@ -73,17 +73,20 @@
 .programs-hero-cta,
 .programs-card-link,
 .program-submit {
-    border: 1px solid #c97d32;
-    background: linear-gradient(135deg, #c97d32 0%, #e6a24e 100%);
-    color: #1d130f;
+    border: 1px solid rgba(255, 228, 192, 0.24);
+    background: var(--cta-gradient);
+    color: var(--text-dark);
     font-weight: 800;
+    box-shadow: var(--cta-shadow);
 }
 
 .program-mail-link {
-    border: 1px solid rgba(255, 236, 216, 0.14);
-    background: rgba(31, 22, 20, 0.72);
-    color: #fff4e8;
+    border: 1px solid var(--glass-stroke);
+    background: var(--glass-panel-soft);
+    color: var(--text-primary);
     font-weight: 700;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .programs-list,
@@ -108,9 +111,11 @@
 .program-apply-note,
 .program-apply-form {
     border-radius: 24px;
-    border: 1px solid rgba(255, 238, 220, 0.1);
-    background: linear-gradient(180deg, rgba(52, 36, 31, 0.92), rgba(36, 25, 23, 0.96));
-    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-stroke);
+    background: var(--glass-panel);
+    box-shadow: var(--glass-shadow-soft);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .programs-card,
@@ -128,8 +133,8 @@
     width: 44px;
     height: 44px;
     border-radius: 14px;
-    background: rgba(214, 144, 68, 0.14);
-    color: #f0c387;
+    background: var(--glass-chip);
+    color: var(--accent);
     margin-bottom: 18px;
 }
 
@@ -137,7 +142,7 @@
 .programs-step h3 {
     margin-bottom: 10px;
     font-size: 1.26rem;
-    color: #fff9f2;
+    color: var(--text-primary);
 }
 
 .programs-detail {
@@ -147,7 +152,7 @@
 .programs-card span {
     display: block;
     margin-top: 14px;
-    color: #f0c387;
+    color: var(--accent);
     font-size: 0.92rem;
     font-weight: 700;
 }
@@ -182,7 +187,7 @@
 }
 
 .program-field span {
-    color: #fff3e3;
+    color: var(--text-primary);
     font-size: 0.95rem;
     font-weight: 700;
 }
@@ -192,16 +197,16 @@
 .program-field textarea {
     width: 100%;
     padding: 14px 16px;
-    border: 1px solid rgba(255, 236, 216, 0.14);
+    border: 1px solid var(--glass-stroke);
     border-radius: 16px;
-    background: rgba(20, 14, 13, 0.86);
-    color: #fff8f0;
+    background: var(--glass-panel-soft);
+    color: var(--text-primary);
     font: inherit;
 }
 
 .program-field input::placeholder,
 .program-field textarea::placeholder {
-    color: rgba(249, 244, 238, 0.45);
+    color: var(--text-muted);
 }
 
 .program-apply-actions {

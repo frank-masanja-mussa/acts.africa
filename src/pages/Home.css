@@ -1,9 +1,7 @@
 .home-page {
     min-height: 100vh;
-    background:
-        radial-gradient(circle at top, rgba(194, 115, 46, 0.24), transparent 28%),
-        linear-gradient(180deg, #150f10 0%, #231717 40%, #2d201d 100%);
-    color: #f9f4ee;
+    background: transparent;
+    color: var(--text-primary);
 }
 
 .home-main {
@@ -27,16 +25,17 @@
     height: 100%;
     object-fit: cover;
     object-position: center 28%;
-    filter: saturate(0.88) brightness(0.8) contrast(1.02);
+    filter: saturate(0.84) brightness(0.78) contrast(1.02);
 }
 
 .hero-scrim {
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(180deg, rgba(10, 6, 6, 0.42) 0%, rgba(10, 6, 6, 0.76) 45%, rgba(20, 13, 12, 0.96) 100%),
-        linear-gradient(90deg, rgba(13, 8, 8, 0.72) 0%, rgba(13, 8, 8, 0.46) 50%, rgba(13, 8, 8, 0.7) 100%),
-        radial-gradient(circle at center, rgba(184, 98, 28, 0.14), transparent 45%);
+        linear-gradient(180deg, rgba(10, 6, 6, 0.34) 0%, rgba(10, 6, 6, 0.7) 44%, rgba(20, 13, 12, 0.94) 100%),
+        linear-gradient(90deg, rgba(13, 8, 8, 0.58) 0%, rgba(13, 8, 8, 0.28) 50%, rgba(13, 8, 8, 0.6) 100%),
+        radial-gradient(circle at center, var(--accent-glow), transparent 48%);
+    animation: lamp-pulse 12s ease-in-out infinite;
 }
 
 .hero-content {
@@ -54,19 +53,21 @@
     align-items: center;
     gap: 8px;
     padding: 8px 14px;
-    border: 1px solid rgba(226, 179, 118, 0.28);
+    border: 1px solid var(--glass-stroke-strong);
     border-radius: 999px;
-    background: rgba(31, 20, 17, 0.72);
-    color: #f0c387;
+    background: var(--glass-chip);
+    color: var(--accent);
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .hero-title {
     margin: 24px 0 18px;
-    color: #fff9f2;
+    color: var(--text-primary);
     font-size: clamp(2.9rem, 7vw, 5.8rem);
     line-height: 0.96;
     letter-spacing: -0.04em;
@@ -76,7 +77,7 @@
 .hero-copy {
     max-width: 540px;
     margin: 0 auto;
-    color: rgba(249, 244, 238, 0.86);
+    color: var(--text-secondary);
     font-size: clamp(1rem, 2vw, 1.22rem);
     line-height: 1.7;
 }
@@ -105,12 +106,12 @@
     min-height: 52px;
     padding: 0 22px;
     border-radius: 16px;
-    border: 1px solid #c97d32;
-    background: linear-gradient(135deg, #c97d32 0%, #e6a24e 100%);
-    color: #1d130f;
+    border: 1px solid rgba(255, 228, 192, 0.24);
+    background: var(--cta-gradient);
+    color: var(--text-dark);
     font-weight: 800;
     letter-spacing: 0.02em;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--cta-shadow);
 }
 
 .hero-secondary,
@@ -121,10 +122,12 @@
     min-height: 52px;
     padding: 0 22px;
     border-radius: 16px;
-    border: 1px solid rgba(255, 237, 220, 0.2);
-    background: rgba(28, 19, 17, 0.72);
-    color: #fff4e8;
+    border: 1px solid var(--glass-stroke);
+    background: var(--glass-panel-soft);
+    color: var(--text-primary);
     font-weight: 700;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .hero-primary:hover,
@@ -155,7 +158,7 @@
     font-size: clamp(2rem, 4vw, 3.1rem);
     line-height: 1.05;
     letter-spacing: -0.03em;
-    color: #fff7ef;
+    color: var(--text-primary);
 }
 
 .section-heading-split {
@@ -167,15 +170,18 @@
 
 .presence-copy {
     border-radius: 28px;
-    border: 1px solid rgba(255, 238, 220, 0.1);
-    background: linear-gradient(180deg, rgba(52, 36, 31, 0.92), rgba(36, 25, 23, 0.96));
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-stroke);
+    background: var(--glass-panel-strong);
+    box-shadow: var(--glass-shadow);
     padding: 30px;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    animation: glass-rise var(--motion-slow) var(--ease-standard);
 }
 
 .presence-copy h2 {
     margin: 16px 0 12px;
-    color: #fff7ef;
+    color: var(--text-primary);
     font-size: clamp(2rem, 4vw, 3.2rem);
     line-height: 1.02;
     letter-spacing: -0.04em;
@@ -184,7 +190,7 @@
 .presence-copy > p {
     max-width: 420px;
     margin: 0 0 22px;
-    color: rgba(249, 244, 238, 0.76);
+    color: var(--text-secondary);
     font-size: 1.02rem;
     line-height: 1.7;
 }
@@ -205,11 +211,11 @@
 .campaign-moment-frame {
     padding: 14px;
     border-radius: 30px;
-    background: linear-gradient(180deg, rgba(65, 44, 36, 0.94), rgba(31, 22, 19, 0.98));
-    border: 1px solid rgba(255, 238, 220, 0.1);
-    box-shadow:
-        0 0 0 1px rgba(255, 238, 220, 0.04),
-        inset 0 1px 0 rgba(255, 238, 220, 0.08);
+    background: var(--glass-panel-strong);
+    border: 1px solid var(--glass-stroke);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .campaign-mosaic-stack {
@@ -222,7 +228,7 @@
     width: 100%;
     object-fit: cover;
     border-radius: 20px;
-    filter: saturate(0.88) brightness(0.8) contrast(1.02);
+    filter: saturate(0.86) brightness(0.78) contrast(1.02);
 }
 
 .campaign-moment-image.landscape {
@@ -258,9 +264,11 @@
 .mandate-card,
 .program-card {
     border-radius: 24px;
-    border: 1px solid rgba(255, 238, 220, 0.1);
-    background: linear-gradient(180deg, rgba(52, 36, 31, 0.92), rgba(36, 25, 23, 0.96));
-    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-stroke);
+    background: var(--glass-panel);
+    box-shadow: var(--glass-shadow-soft);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .shortcut-card {
@@ -278,9 +286,10 @@
     width: 44px;
     height: 44px;
     border-radius: 14px;
-    background: rgba(214, 144, 68, 0.14);
-    color: #f0c387;
+    background: var(--glass-chip);
+    color: var(--accent);
     margin-bottom: 18px;
+    border: 1px solid rgba(255, 236, 212, 0.12);
 }
 
 .shortcut-card h3,
@@ -288,14 +297,14 @@
 .program-card h3 {
     font-size: 1.28rem;
     margin-bottom: 10px;
-    color: #fff9f2;
+    color: var(--text-primary);
 }
 
 .shortcut-card p,
 .mandate-card p,
 .program-card p,
 .proof-card span {
-    color: rgba(249, 244, 238, 0.78);
+    color: var(--text-secondary);
     line-height: 1.65;
 }
 
@@ -304,7 +313,7 @@
     align-items: center;
     gap: 6px;
     margin-top: 16px;
-    color: #f0c387;
+    color: var(--accent);
     font-weight: 700;
 }
 
@@ -319,7 +328,7 @@
 .proof-card strong {
     display: block;
     font-size: clamp(2rem, 4vw, 3rem);
-    color: #f0c387;
+    color: var(--accent);
     margin-bottom: 10px;
 }
 
@@ -345,18 +354,21 @@
     min-height: 190px;
     padding: 24px 18px;
     border-radius: 24px;
-    border: 1px solid rgba(255, 238, 220, 0.1);
-    background: linear-gradient(180deg, rgba(52, 36, 31, 0.92), rgba(36, 25, 23, 0.96));
+    border: 1px solid var(--glass-stroke);
+    background: var(--glass-panel);
     color: inherit;
     text-decoration: none;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--glass-shadow-soft);
     transition: transform 0.25s ease, border-color 0.25s ease;
     overflow: hidden;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    animation: glass-float 10s ease-in-out infinite;
 }
 
 .partner-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(240, 195, 135, 0.24);
+    border-color: var(--glass-stroke-strong);
 }
 
 .partner-logo-wrap {
@@ -366,12 +378,14 @@
     width: 100%;
     min-height: 98px;
     border-radius: 22px;
-    background: linear-gradient(180deg, rgba(65, 44, 36, 0.92), rgba(31, 22, 19, 0.96));
-    border: 1px solid rgba(240, 195, 135, 0.12);
+    background: var(--glass-chip);
+    border: 1px solid var(--glass-stroke);
     padding: 16px 18px;
     position: relative;
     overflow: hidden;
     box-shadow: inset 0 1px 0 rgba(255, 238, 220, 0.06);
+    backdrop-filter: blur(calc(var(--glass-blur) + 4px));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 4px));
 }
 
 .partner-logo-wrap::before {
@@ -399,7 +413,7 @@
 
 .partner-meta strong {
     display: block;
-    color: #fff9f2;
+    color: var(--text-primary);
     font-size: 0.98rem;
     line-height: 1.35;
 }
@@ -407,13 +421,13 @@
 .partner-meta span {
     display: block;
     margin-top: 4px;
-    color: rgba(249, 244, 238, 0.66);
+    color: var(--text-muted);
     font-size: 0.83rem;
     line-height: 1.45;
 }
 
 .partner-card.text-only {
-    background: linear-gradient(180deg, rgba(68, 46, 35, 0.95), rgba(39, 28, 24, 0.98));
+    background: var(--glass-panel-strong);
 }
 
 .partner-text-mark {
@@ -423,9 +437,9 @@
     width: 98px;
     height: 98px;
     border-radius: 22px;
-    background: linear-gradient(180deg, rgba(65, 44, 36, 0.92), rgba(31, 22, 19, 0.96));
-    border: 1px solid rgba(240, 195, 135, 0.12);
-    color: #f0c387;
+    background: var(--glass-chip);
+    border: 1px solid var(--glass-stroke);
+    color: var(--accent);
     font-size: 1.4rem;
     font-weight: 900;
     letter-spacing: 0.08em;
@@ -439,7 +453,7 @@
 .program-card span {
     display: block;
     margin-top: 14px;
-    color: #f0c387;
+    color: var(--accent);
     font-size: 0.92rem;
     font-weight: 700;
 }
